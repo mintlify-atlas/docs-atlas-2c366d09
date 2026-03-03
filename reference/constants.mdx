@@ -22,6 +22,38 @@ All customizable constants are defined in `RaidConsumableChecker_Constants.lua`.
   Current version number displayed on load.
 </ParamField>
 
+## Saved Variables
+
+<ParamField path="RaidConsumableCheckerDB" type="table">
+  Global saved variables table persisted across game sessions.
+  
+  **Structure:**
+  ```lua
+  RaidConsumableCheckerDB = {
+    position = {
+      point = "CENTER",
+      x = 0,
+      y = 0
+    },
+    ConsumableData = {
+      Items = { ... },
+      Categories = { ... }
+    }
+  }
+  ```
+  
+  **Location:** `WTF/Account/[AccountName]/SavedVariables/RaidConsumableChecker.lua`
+  
+  **Fields:**
+  - `position` - Window position (point, x offset, y offset)
+  - `ConsumableData.Items` - Array of configured consumable items
+  - `ConsumableData.Categories` - Array of configured categories
+</ParamField>
+
+<Note>
+  The saved variables are automatically created on first load. Manual editing is not recommended - use the in-game configuration UI instead.
+</Note>
+
 ## UI Dimensions
 
 ### Window Size
