@@ -1,0 +1,79 @@
+---
+title: Slash commands
+description: All available slash commands for the Raid Consumable Checker addon
+---
+
+Raid Consumable Checker provides three slash commands that all perform the same function: toggling the main addon window.
+
+## Available commands
+
+You can use any of these three commands interchangeably:
+
+<Tabs>
+  <Tab title="/rcc">
+    The primary and shortest slash command.
+    
+    ```
+    /rcc
+    ```
+    
+    This is the recommended command for quick access.
+  </Tab>
+  
+  <Tab title="/raidcheck">
+    An alternative, more descriptive command.
+    
+    ```
+    /raidcheck
+    ```
+    
+    Useful if you prefer a self-documenting command name.
+  </Tab>
+  
+  <Tab title="/consumables">
+    Another alternative that describes what the addon tracks.
+    
+    ```
+    /consumables
+    ```
+    
+    Easy to remember based on the addon's purpose.
+  </Tab>
+</Tabs>
+
+## Command behavior
+
+All three commands toggle the main window:
+
+- If the window is **closed**, the command opens it
+- If the window is **open**, the command closes it
+
+<Info>
+The addon remembers your window position between sessions, so it will reappear where you last placed it.
+</Info>
+
+## Command registration
+
+These commands are registered automatically when the addon loads. You'll see a confirmation message in your chat:
+
+```
+Raid Consumable Checker: v2.1.0 loaded. Type /rcc or /raidcheck to open.
+```
+
+<Note>
+No additional commands or arguments are supported. Configuration is done through the in-game UI via the Config button.
+</Note>
+
+## Example usage
+
+1. Type `/rcc` to open the tracker window
+2. Check your consumables and buffs
+3. Type `/rcc` again to close the window
+
+You can bind these commands to macros for even quicker access:
+
+```
+/rcc
+```
+
+This simple macro will toggle the addon window with a single click.

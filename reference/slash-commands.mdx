@@ -1,0 +1,118 @@
+---
+title: Slash Commands
+description: Complete reference for all RCC slash commands
+icon: terminal
+---
+
+## Available Commands
+
+Raid Consumable Checker provides three slash commands that all perform the same function: toggling the main addon window.
+
+### Primary Command
+
+<ParamField path="/rcc" type="command">
+  Primary slash command to toggle the RCC window.
+  
+  **Usage:**
+  ```
+  /rcc
+  ```
+  
+  **Behavior:**
+  - Opens the main window if it's currently hidden
+  - Closes the main window if it's currently visible
+  - No arguments or parameters supported
+</ParamField>
+
+### Alternative Commands
+
+<ParamField path="/raidcheck" type="command">
+  Secondary slash command, identical functionality to `/rcc`.
+  
+  **Usage:**
+  ```
+  /raidcheck
+  ```
+</ParamField>
+
+<ParamField path="/consumables" type="command">
+  Tertiary slash command, identical functionality to `/rcc`.
+  
+  **Usage:**
+  ```
+  /consumables
+  ```
+</ParamField>
+
+## Implementation Details
+
+### Command Registration
+
+All three commands are registered in `RaidConsumableChecker_Core.lua:320-328`:
+
+```lua
+function RaidConsumableChecker:RegisterSlashCommands()
+    SLASH_RAIDCONSUMABLECHECKER1 = RCC_Constants.SLASH_COMMANDS.PRIMARY
+    SLASH_RAIDCONSUMABLECHECKER2 = RCC_Constants.SLASH_COMMANDS.SECONDARY
+    SLASH_RAIDCONSUMABLECHECKER3 = RCC_Constants.SLASH_COMMANDS.TERTIARY
+    
+    SlashCmdList["RAIDCONSUMABLECHECKER"] = function(msg)
+        RaidConsumableChecker:ToggleWindow()
+    end
+end
+```
+
+### Window Toggle Logic
+
+The `ToggleWindow()` function in `RaidConsumableChecker_Core.lua:297-303`:
+
+```lua
+function RaidConsumableChecker:ToggleWindow()
+    if self.mainFrame:IsVisible() then
+        self.mainFrame:Hide()
+    else
+        self.mainFrame:Show()
+    end
+end
+```
+
+## Constants Reference
+
+The slash command strings are defined in `RaidConsumableChecker_Constants.lua:87-91`:
+
+<ResponseField name="SLASH_COMMANDS.PRIMARY" type="string" default="/rcc">
+  The primary slash command
+</ResponseField>
+
+<ResponseField name="SLASH_COMMANDS.SECONDARY" type="string" default="/raidcheck">
+  The secondary slash command
+</ResponseField>
+
+<ResponseField name="SLASH_COMMANDS.TERTIARY" type="string" default="/consumables">
+  The tertiary slash command
+</ResponseField>
+
+## Common Usage
+
+<Tip>
+  Use `/rcc` as it's the shortest and easiest to remember command.
+</Tip>
+
+### When to Use
+
+- **Before Raids**: Check your consumable inventory before entering a raid instance
+- **During Preparation**: Verify buff status while preparing for boss encounters
+- **Quick Reference**: Toggle on/off quickly without closing other windows
+
+### Keyboard Macros
+
+You can create a macro to combine RCC with other raid preparation tasks:
+
+```lua
+/rcc
+/cast Find Herbs
+```
+
+<Note>
+  The slash commands do not accept any parameters or arguments. All configuration must be done through the Config UI accessible from the main window.
+</Note>

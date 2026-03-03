@@ -1,0 +1,518 @@
+---
+title: Configuration Examples
+description: Real configuration examples from the source code
+---
+
+## Default Configuration
+
+These are the actual default items and categories that ship with RCC, extracted from `RaidConsumableChecker_Constants.lua`.
+
+## Flask Example
+
+Flasks are long-duration consumables with buff tracking:
+
+```lua RaidConsumableChecker_Constants.lua
+{
+  itemName = "Flask of Supreme Power",
+  itemID = 13512,
+  iconPath = "INV_Potion_41",
+  requiredCount = 1,
+  buffName = "Supreme Power",
+  description = "Increases damage done by magical spells and effects by up to 150 for 2 hrs. You can only have the effect of one flask at a time. This effect persists through death.",
+  category = "category1",
+  entryType = "consumable"
+}
+```
+
+**Key Features:**
+- ✅ Tracks inventory count (requiredCount = 1)
+- ✅ Monitors "Supreme Power" buff
+- ✅ Click to use from bags
+- 🟢 Green border when buff active &gt;5 min
+- 🟠 Orange border when buff &lt;5 min
+- 🔴 Red border when no buff
+
+## Weapon Enchant Example
+
+Weapon enchants use the special `EQUIPPED_WEAPON` keyword:
+
+```lua RaidConsumableChecker_Constants.lua
+{
+  itemName = "Wizard Oil",
+  itemID = 20750,
+  iconPath = "INV_Potion_104",
+  requiredCount = 4,
+  buffName = "EQUIPPED_WEAPON",
+  description = "While applied to target weapon it increases spell damage by up to 24. Lasts for 30 minutes.",
+  category = "category1",
+  entryType = "consumable"
+}
+```
+
+**Key Features:**
+- ✅ Uses `EQUIPPED_WEAPON` keyword
+- ✅ Tracks main hand weapon enchant
+- ✅ Shows inventory count
+- 🟢 Green when weapon is enchanted
+- 🔴 Red when no enchant detected
+
+<Tip>
+  Works for **all** weapon enchants: Wizard Oil, Mana Oil, Sharpening Stones, Rogue Poisons, etc.
+</Tip>
+
+## Raid Food Example
+
+Food buffs with specific buff names:
+
+```lua RaidConsumableChecker_Constants.lua
+{
+  itemName = "Runn Tum Tuber Surprise",
+  itemID = 18254,
+  iconPath = "INV_Misc_Food_63",
+  requiredCount = 12,
+  buffName = "Well Fed",
+  description = "Restores 1933 health over 27 sec. Must remain seated while eating. Also increases your Intellect by 10 for 10 min.",
+  category = "category1",
+  entryType = "consumable"
+}
+```
+
+**Key Features:**
+- ✅ Item name is "Runn Tum Tuber Surprise"
+- ✅ Buff name is "Well Fed" (different from item)
+- ✅ Requires 12 in inventory
+- 🟢/🟠/🔴 Border tracks "Well Fed" buff status
+
+<Note>
+  Many consumables give buffs with different names than the item. Always check the actual buff name in-game.
+</Note>
+
+## Elixir Example
+
+Standard elixir with buff tracking:
+
+```lua RaidConsumableChecker_Constants.lua
+{
+  itemName = "Greater Arcane Elixir",
+  itemID = 13454,
+  iconPath = "INV_Potion_25",
+  requiredCount = 2,
+  buffName = "Greater Arcane Elixir",
+  description = "Increases spell damage by up to 35 for 1 hour.",
+  category = "category2",
+  entryType = "consumable"
+}
+```
+
+**Key Features:**
+- ✅ Item and buff have same name
+- ✅ Tracks inventory and buff status
+- ✅ Assigned to "Main Elixirs" category
+
+## Instant Potion Examples
+
+Potions without buffs (instant effect):
+
+<CodeGroup>
+```lua Healing Potion
+{
+  itemName = "Major Healing Potion",
+  itemID = 13446,
+  iconPath = "INV_Potion_54",
+  requiredCount = 10,
+  description = "Restores 1050 to 1750 health.",
+  category = "category3",
+  entryType = "consumable"
+}
+```
+
+```lua Mana Potion
+{
+  itemName = "Major Mana Potion",
+  itemID = 13444,
+  iconPath = "INV_Potion_76",
+  requiredCount = 10,
+  description = "Restores 1350 to 2250 mana.",
+  category = "category3",
+  entryType = "consumable"
+}
+```
+</CodeGroup>
+
+**Key Features:**
+- ✅ NO `buffName` field (instant effect)
+- ⚫ Black border (no buff to track)
+- ✅ Inventory counter shows green/red
+- ✅ Click to use from bags
+
+<Warning>
+  **Do not add buffName to instant potions!** Healing and mana potions don't give buffs. Leaving buffName empty shows a black border (correct behavior).
+</Warning>
+
+## Class Buff Examples
+
+Buffs without physical items:
+
+<CodeGroup>
+```lua Single Buff
+{
+  displayName = "Thorns",
+  iconPath = "SPELL_Nature_Thorns",
+  buffName = "Thorns",
+  description = "Thorns sprout from the friendly target causing 18 Nature damage to attackers when hit. Lasts 10 min.",
+  category = "category4",
+  entryType = "buff"
+}
+```
+
+```lua Multiple Buff Variants
+{
+  displayName = "Mage Intellect",
+  iconPath = "SPELL_Holy_Magicalsentry",
+  buffName = { "Arcane Intellect", "Arcane Brilliance" },
+  description = "Increases Intellect by 31 for 30 min.",
+  category = "category4",
+  entryType = "buff"
+}
+```
+</CodeGroup>
+
+**Key Features:**
+- ✅ `entryType = "buff"`
+- ✅ NO itemName (no physical item)
+- ✅ NO requiredCount (no inventory)
+- ✅ Uses `displayName` for label
+- 🟢/🟠/🔴 Border tracks buff status
+
+<Tip>
+  Multiple buff variants let you track both single-target (Arcane Intellect) and group versions (Arcane Brilliance) with one entry.
+</Tip>
+
+## Complete Category Set
+
+Here are all default categories:
+
+```lua RaidConsumableChecker_Constants.lua
+RCC_Constants.DEFAULT_CATEGORIES = {
+  {
+    id = "category1",
+    name = "Flasks / Oil / Food",
+    dashes = 20
+  },
+  {
+    id = "category2",
+    name = "Main Elixirs",
+    dashes = 24
+  },
+  {
+    id = "category3",
+    name = "Potions",
+    dashes = 26
+  },
+  {
+    id = "category4",
+    name = "Buffs",
+    dashes = 27
+  }
+}
+```
+
+## Custom Configuration Examples
+
+Here are some custom setups you might create:
+
+### Healer Configuration
+
+<CodeGroup>
+```lua Categories
+{
+  { id = "cat_prebuff", name = "Pre-Raid Buffs", dashes = 22 },
+  { id = "cat_consumables", name = "Consumables", dashes = 24 },
+  { id = "cat_potions", name = "Potions", dashes = 26 }
+}
+```
+
+```lua Items
+-- Pre-Raid Buffs
+{
+  itemName = "Flask of Distilled Wisdom",
+  iconPath = "INV_Potion_97",
+  requiredCount = 1,
+  buffName = "Distilled Wisdom",
+  category = "cat_prebuff",
+  entryType = "consumable"
+},
+{
+  displayName = "Divine Spirit",
+  iconPath = "SPELL_Holy_DivineSpirit",
+  buffName = { "Divine Spirit", "Prayer of Spirit" },
+  category = "cat_prebuff",
+  entryType = "buff"
+},
+
+-- Consumables
+{
+  itemName = "Brilliant Mana Oil",
+  iconPath = "INV_Potion_100",
+  requiredCount = 5,
+  buffName = "EQUIPPED_WEAPON",
+  category = "cat_consumables",
+  entryType = "consumable"
+},
+{
+  itemName = "Nightfin Soup",
+  iconPath = "INV_Drink_04",
+  requiredCount = 20,
+  buffName = "Well Fed",
+  category = "cat_consumables",
+  entryType = "consumable"
+},
+
+-- Potions
+{
+  itemName = "Major Mana Potion",
+  iconPath = "INV_Potion_76",
+  requiredCount = 15,
+  category = "cat_potions",
+  entryType = "consumable"
+}
+```
+</CodeGroup>
+
+### DPS Warrior Configuration
+
+<CodeGroup>
+```lua Categories
+{
+  { id = "cat_flasks", name = "Flasks & Food", dashes = 24 },
+  { id = "cat_elixirs", name = "Elixirs", dashes = 27 },
+  { id = "cat_combat", name = "Combat Items", dashes = 24 }
+}
+```
+
+```lua Items
+-- Flasks & Food
+{
+  itemName = "Flask of the Titans",
+  iconPath = "INV_Potion_62",
+  requiredCount = 1,
+  buffName = "Flask of the Titans",
+  category = "cat_flasks",
+  entryType = "consumable"
+},
+{
+  itemName = "Grilled Squid",
+  iconPath = "INV_Misc_Fish_22",
+  requiredCount = 20,
+  buffName = "Well Fed",
+  category = "cat_flasks",
+  entryType = "consumable"
+},
+
+-- Elixirs
+{
+  itemName = "Elixir of the Mongoose",
+  iconPath = "INV_Potion_32",
+  requiredCount = 3,
+  buffName = "Elixir of the Mongoose",
+  category = "cat_elixirs",
+  entryType = "consumable"
+},
+{
+  itemName = "Elixir of Giants",
+  iconPath = "INV_Potion_61",
+  requiredCount = 3,
+  buffName = "Elixir of Giants",
+  category = "cat_elixirs",
+  entryType = "consumable"
+},
+
+-- Combat Items
+{
+  itemName = "Elemental Sharpening Stone",
+  iconPath = "INV_Stone_SharpeningStone_06",
+  requiredCount = 5,
+  buffName = "EQUIPPED_WEAPON",
+  category = "cat_combat",
+  entryType = "consumable"
+},
+{
+  itemName = "Mighty Rage Potion",
+  iconPath = "INV_Potion_41",
+  requiredCount = 10,
+  category = "cat_combat",
+  entryType = "consumable"
+}
+```
+</CodeGroup>
+
+### Rogue Configuration
+
+```lua Poisons with EQUIPPED_WEAPON
+{
+  itemName = "Instant Poison VI",
+  iconPath = "Ability_Poisons",
+  requiredCount = 5,
+  buffName = "EQUIPPED_WEAPON",
+  description = "Coats a weapon with poison that lasts for 30 minutes.",
+  category = "cat_combat",
+  entryType = "consumable"
+}
+```
+
+<Note>
+  For rogues, `EQUIPPED_WEAPON` tracks **main hand** poison only. If you need to track offhand separately, you'll need to manually check it (RCC limitation).
+</Note>
+
+## Field Combinations
+
+Here are valid field combinations:
+
+<AccordionGroup>
+  <Accordion title="Full-Featured Consumable">
+    Everything enabled:
+    
+    ```lua
+    {
+      entryType = "consumable",
+      itemName = "Flask of Supreme Power",
+      displayName = "Supreme Flask",        -- Custom label
+      buffName = "Supreme Power",
+      itemID = 13512,
+      requiredCount = 1,
+      iconPath = "INV_Potion_41",
+      description = "...",
+      category = "category1"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Minimal Consumable">
+    Just the essentials:
+    
+    ```lua
+    {
+      entryType = "consumable",
+      itemName = "Major Healing Potion",
+      requiredCount = 10,
+      iconPath = "INV_Potion_54",
+      category = "category3"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Buff with Multiple Variants">
+    Track multiple buff names:
+    
+    ```lua
+    {
+      entryType = "buff",
+      displayName = "Mage Int",
+      buffName = { "Arcane Intellect", "Arcane Brilliance" },
+      iconPath = "SPELL_Holy_Magicalsentry",
+      description = "...",
+      category = "category4"
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Weapon Enchant">
+    Using EQUIPPED_WEAPON:
+    
+    ```lua
+    {
+      entryType = "consumable",
+      itemName = "Wizard Oil",
+      buffName = "EQUIPPED_WEAPON",
+      requiredCount = 4,
+      iconPath = "INV_Potion_104",
+      category = "category1"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Common Patterns
+
+### Pattern: Consumable with Buff
+
+Most raid consumables follow this pattern:
+
+```lua Template
+{
+  itemName = "[Exact Item Name]",
+  buffName = "[Exact Buff Name]",
+  requiredCount = [number],
+  iconPath = "[Icon Name]",
+  category = "[category_id]",
+  entryType = "consumable"
+}
+```
+
+### Pattern: Instant Item (No Buff)
+
+Potions and instant-use items:
+
+```lua Template
+{
+  itemName = "[Exact Item Name]",
+  requiredCount = [number],
+  iconPath = "[Icon Name]",
+  category = "[category_id]",
+  entryType = "consumable"
+  -- NO buffName field!
+}
+```
+
+### Pattern: Class Buff
+
+Tracking buffs without items:
+
+```lua Template
+{
+  displayName = "[Display Label]",
+  buffName = "[Buff Name]",  -- or { "Buff1", "Buff2" }
+  iconPath = "[Icon Name]",
+  category = "[category_id]",
+  entryType = "buff"
+  -- NO itemName or requiredCount!
+}
+```
+
+## Testing Your Configuration
+
+After adding items, test them:
+
+<Steps>
+  <Step title="Check Icon">
+    ✅ Icon appears (not question mark)  
+    ❌ Question mark → Fix iconPath
+  </Step>
+  
+  <Step title="Check Inventory Count">
+    ✅ Shows correct count (e.g., "5/10")  
+    ❌ Shows "0/10" when you have items → Fix itemName (case-sensitive)
+  </Step>
+  
+  <Step title="Check Buff Border">
+    ✅ Border changes color when you apply/remove buff  
+    ❌ Border stays red → Fix buffName (case-sensitive)  
+    ⚫ Border is black → Expected for items without buffs
+  </Step>
+  
+  <Step title="Check Click-to-Use">
+    ✅ Left-click uses the item  
+    ❌ Nothing happens → Fix itemName or check if item is in bags
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Item Configuration" icon="flask" href="/configuration/items">
+    Learn about all item fields in detail
+  </Card>
+  <Card title="Advanced Customization" icon="sliders" href="/configuration/advanced">
+    Customize colors, fonts, and constants
+  </Card>
+</CardGroup>

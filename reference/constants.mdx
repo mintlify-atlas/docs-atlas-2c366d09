@@ -1,0 +1,437 @@
+---
+title: Constants Reference
+description: Complete reference for all customizable RCC constants
+icon: sliders
+---
+
+## Overview
+
+All customizable constants are defined in `RaidConsumableChecker_Constants.lua`. These values control UI appearance, timers, colors, fonts, and default behavior.
+
+<Warning>
+  Modifying constants requires editing the Lua file directly. Always back up the original file before making changes.
+</Warning>
+
+## Addon Info
+
+<ParamField path="ADDON_NAME" type="string" default="RaidConsumableChecker">
+  Internal addon name used for event registration.
+</ParamField>
+
+<ParamField path="ADDON_VERSION" type="string" default="2.1.0">
+  Current version number displayed on load.
+</ParamField>
+
+## UI Dimensions
+
+### Window Size
+
+<ParamField path="WINDOW_WIDTH" type="number" default="850">
+  Default window width in pixels (auto-calculated based on items).
+</ParamField>
+
+<ParamField path="WINDOW_HEIGHT" type="number" default="300">
+  Default window height in pixels (auto-calculated based on categories).
+</ParamField>
+
+<ParamField path="WINDOW_MIN_WIDTH" type="number" default="400">
+  Minimum window width to prevent UI from becoming too small.
+</ParamField>
+
+<ParamField path="WINDOW_PADDING" type="number" default="15">
+  Outer padding around window content in pixels.
+</ParamField>
+
+### Title Bar
+
+<ParamField path="TITLE_HEIGHT" type="number" default="30">
+  Height of the title bar in pixels.
+</ParamField>
+
+### Content Margins
+
+<ParamField path="CONTENT_MARGIN_LEFT" type="number" default="15">
+  Left margin for content area in pixels.
+</ParamField>
+
+<ParamField path="CONTENT_MARGIN_RIGHT" type="number" default="-5">
+  Right margin for content area in pixels.
+</ParamField>
+
+<ParamField path="CONTENT_MARGIN_BOTTOM" type="number" default="15">
+  Bottom margin for content area in pixels.
+</ParamField>
+
+### Icon and Item Display
+
+<ParamField path="ICON_SIZE" type="number" default="45">
+  Size of item icons in pixels (width and height).
+</ParamField>
+
+<ParamField path="ICON_SPACING_X" type="number" default="25">
+  Horizontal spacing between item icons in pixels.
+</ParamField>
+
+### Category Display
+
+<ParamField path="CATEGORY_HEADER_HEIGHT" type="number" default="25">
+  Height of category header text in pixels.
+</ParamField>
+
+<ParamField path="CATEGORY_SPACING" type="number" default="30">
+  Vertical space between categories in pixels.
+</ParamField>
+
+### Frame Borders
+
+<ParamField path="BORDER_THICKNESS" type="number" default="4">
+  Thickness of item icon borders in pixels.
+</ParamField>
+
+## Colors
+
+<Note>
+  All colors use 8-character hex format: `AARRGGBB` where AA = alpha, RR = red, GG = green, BB = blue.
+</Note>
+
+### Frame Background
+
+<ParamField path="BACKGROUND_COLOR" type="hex" default="CC000000">
+  Main window background color (Black with 80% alpha).
+</ParamField>
+
+### Title Bar
+
+<ParamField path="TITLE_BG_COLOR" type="hex" default="E61A1A1A">
+  Title bar background color (Dark gray with 90% alpha).
+</ParamField>
+
+<ParamField path="TITLE_TEXT_COLOR" type="hex" default="FFFFD100">
+  Title bar text color (Gold, fully opaque).
+</ParamField>
+
+### Item Status Borders
+
+<ParamField path="BORDER_COLOR_BUFF_ACTIVE" type="hex" default="FF00FF00">
+  Border when buff is active with &gt;5 min remaining (Green).
+</ParamField>
+
+<ParamField path="BORDER_COLOR_BUFF_WARNING" type="hex" default="FFFF8800">
+  Border when buff is active with &lt;5 min remaining (Orange).
+</ParamField>
+
+<ParamField path="BORDER_COLOR_BUFF_INACTIVE" type="hex" default="FFFF0000">
+  Border when buff is not active (Red).
+</ParamField>
+
+<ParamField path="BORDER_COLOR_NO_BUFF" type="hex" default="FF000000">
+  Border for items without buff tracking, like potions (Black).
+</ParamField>
+
+### Text Colors
+
+<ParamField path="TEXT_COLOR_NORMAL" type="hex" default="FFFFFFFF">
+  Normal text color (White).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_SUFFICIENT" type="hex" default="FF00FF00">
+  Text color when you have enough items (Green).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_INSUFFICIENT" type="hex" default="FFFF0000">
+  Text color when you need more items (Red).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_CATEGORY" type="hex" default="FFFFD100">
+  Category header text color (Gold).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_ADDON_NAME" type="hex" default="FF3FC7EB">
+  Addon name color in chat messages (Light blue).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_GOLD" type="hex" default="FFFFDB00">
+  Highlight color for commands in chat (Gold).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_HIGHLIGHT" type="hex" default="FFFFFFFF">
+  Highlight color for item/category names in chat (White).
+</ParamField>
+
+<ParamField path="TEXT_COLOR_DESCRIPTION" type="hex" default="FFCCCCCC">
+  Item description text color in tooltips (Gray).
+</ParamField>
+
+## Fonts
+
+### Font Files
+
+<ParamField path="FONT_TITLE" type="string" default="Fonts\\FRIZQT__.TTF">
+  Font file for title text.
+</ParamField>
+
+<ParamField path="FONT_NORMAL" type="string" default="Fonts\\FRIZQT__.TTF">
+  Font file for normal text.
+</ParamField>
+
+### Font Sizes
+
+<ParamField path="FONT_SIZE_TITLE" type="number" default="14">
+  Font size for window title.
+</ParamField>
+
+<ParamField path="FONT_SIZE_CATEGORY" type="number" default="13">
+  Font size for category headers.
+</ParamField>
+
+<ParamField path="FONT_SIZE_ITEM_NAME" type="number" default="11">
+  Font size for item names under icons.
+</ParamField>
+
+<ParamField path="FONT_SIZE_COUNTER" type="number" default="14">
+  Font size for item count numbers.
+</ParamField>
+
+<ParamField path="FONT_SIZE_BUFF_TIME" type="number" default="14">
+  Font size for buff time remaining display.
+</ParamField>
+
+## Timers and Performance
+
+<ParamField path="BUFF_SCAN_INTERVAL" type="number" default="2.0">
+  Seconds between buff scans (only when window is open).
+</ParamField>
+
+<ParamField path="BUFF_UPDATE_DELAY_AFTER_USE" type="number" default="0.2">
+  Seconds to wait after using item before updating buffs.
+</ParamField>
+
+<ParamField path="BUFF_WARNING_THRESHOLD" type="number" default="300">
+  Buff warning threshold in seconds - shows orange border (5 minutes).
+</ParamField>
+
+## Text Strings
+
+### Window Title
+
+<ParamField path="TEXT_WINDOW_TITLE" type="string" default="Raid Consumable Checker">
+  Main window title text.
+</ParamField>
+
+### Counter Format
+
+<ParamField path="TEXT_COUNTER_FORMAT" type="string" default="%d/%d">
+  Format for item counter display: current/required (e.g., "5/10").
+</ParamField>
+
+### Slash Commands
+
+<ParamField path="SLASH_COMMANDS.PRIMARY" type="string" default="/rcc">
+  Primary slash command.
+</ParamField>
+
+<ParamField path="SLASH_COMMANDS.SECONDARY" type="string" default="/raidcheck">
+  Alternative slash command.
+</ParamField>
+
+<ParamField path="SLASH_COMMANDS.TERTIARY" type="string" default="/consumables">
+  Third alternative slash command.
+</ParamField>
+
+### Tooltips
+
+<ParamField path="TEXT_TOOLTIP_WEAPON_ENCHANT" type="string" default="Weapon enchant">
+  Tooltip text for weapon enchant status.
+</ParamField>
+
+<ParamField path="TEXT_TOOLTIP_CLICK_TO_USE" type="string" default="Click to use">
+  Tooltip hint for clickable items.
+</ParamField>
+
+### Confirmation Dialog
+
+<ParamField path="TEXT_CONFIRM_MESSAGE" type="string" default="You already have the buff '%s'. Do you want to use another %s?">
+  Confirmation message when buff already active.
+</ParamField>
+
+<ParamField path="TEXT_CONFIRM_ACCEPT" type="string" default="Yes">
+  Accept button text for confirmation dialog.
+</ParamField>
+
+<ParamField path="TEXT_CONFIRM_CANCEL" type="string" default="No">
+  Cancel button text for confirmation dialog.
+</ParamField>
+
+## Textures and Paths
+
+<ParamField path="TEXTURE_ICON_BASE_PATH" type="string" default="Interface\\Icons\\">
+  Base path for all item icons.
+</ParamField>
+
+<ParamField path="TEXTURE_DEFAULT_ICON" type="string" default="Interface\\Icons\\INV_Misc_QuestionMark">
+  Fallback icon when item icon path is invalid or missing.
+</ParamField>
+
+<ParamField path="TEXTURE_BORDER" type="string" default="Interface\\Buttons\\WHITE8X8">
+  Texture used for borders and backgrounds.
+</ParamField>
+
+## Behavior
+
+<ParamField path="SHOW_ITEM_NAMES" type="boolean" default="true">
+  Show item names below icons.
+</ParamField>
+
+### Special Buff Names
+
+<ParamField path="SPECIAL_BUFF_EQUIPPED_WEAPON" type="string" default="EQUIPPED_WEAPON">
+  Special identifier for weapon enchants like Wizard Oil.
+</ParamField>
+
+## Default Saved Variables
+
+### Window Position
+
+<ParamField path="DEFAULT_POSITION.point" type="string" default="CENTER">
+  Anchor point for window position.
+</ParamField>
+
+<ParamField path="DEFAULT_POSITION.x" type="number" default="0">
+  X offset from anchor point.
+</ParamField>
+
+<ParamField path="DEFAULT_POSITION.y" type="number" default="0">
+  Y offset from anchor point.
+</ParamField>
+
+## Default Categories
+
+```lua
+RCC_Constants.DEFAULT_CATEGORIES = {
+    {id = "category1", name = "Flasks / Oil / Food", dashes = 20},
+    {id = "category2", name = "Main Elixirs", dashes = 24},
+    {id = "category3", name = "Potions", dashes = 26},
+    {id = "category4", name = "Buffs", dashes = 27}
+}
+```
+
+<ResponseField name="id" type="string">
+  Unique category identifier
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Display name for the category
+</ResponseField>
+
+<ResponseField name="dashes" type="number">
+  Number of dashes to display on each side of the category name
+</ResponseField>
+
+## Default Items
+
+The `DEFAULT_ITEMS` array contains the initial item configuration for new installations. See the full list in `RaidConsumableChecker_Constants.lua:138-213`.
+
+### Example Default Item Structure
+
+```lua
+{
+    itemName = "Flask of Supreme Power",
+    itemID = 13512,
+    iconPath = "INV_Potion_41",
+    requiredCount = 1,
+    buffName = "Supreme Power",
+    description = "Increases damage done by magical spells and effects by up to 150 for 2 hrs.",
+    category = "category1",
+    entryType = "consumable"
+}
+```
+
+## Customization Examples
+
+### Change Buff Scan Rate
+
+To scan buffs every 1 second instead of 2:
+
+```lua
+RCC_Constants.BUFF_SCAN_INTERVAL = 1.0
+```
+
+### Adjust Warning Threshold
+
+To show orange warning at 10 minutes (600 seconds):
+
+```lua
+RCC_Constants.BUFF_WARNING_THRESHOLD = 600
+```
+
+### Modify Border Colors
+
+To use blue for active buffs:
+
+```lua
+RCC_Constants.BORDER_COLOR_BUFF_ACTIVE = "FF0000FF"  -- Blue
+```
+
+### Change Icon Size
+
+To make icons larger (60x60):
+
+```lua
+RCC_Constants.ICON_SIZE = 60
+```
+
+<Tip>
+  After modifying constants, reload the UI with `/reload` or restart the game for changes to take effect.
+</Tip>
+
+## Color Format Reference
+
+### Hex Color Format: AARRGGBB
+
+| Component | Position | Range | Description |
+|-----------|----------|-------|-------------|
+| Alpha | 1-2 | 00-FF | Transparency (00=invisible, FF=opaque) |
+| Red | 3-4 | 00-FF | Red component |
+| Green | 5-6 | 00-FF | Green component |
+| Blue | 7-8 | 00-FF | Blue component |
+
+### Common Colors
+
+```lua
+"FFFFFFFF"  -- White (opaque)
+"FF000000"  -- Black (opaque)
+"FFFF0000"  -- Red (opaque)
+"FF00FF00"  -- Green (opaque)
+"FF0000FF"  -- Blue (opaque)
+"FFFFFF00"  -- Yellow (opaque)
+"FFFF8800"  -- Orange (opaque)
+"80FFFFFF"  -- White (50% transparent)
+"00FFFFFF"  -- White (fully transparent)
+```
+
+## Performance Tuning
+
+<Note>
+  These constants allow you to balance visual responsiveness with CPU usage.
+</Note>
+
+### Recommended Settings
+
+**High Performance:**
+```lua
+RCC_Constants.BUFF_SCAN_INTERVAL = 1.0  -- More responsive
+```
+
+**Low Performance:**
+```lua
+RCC_Constants.BUFF_SCAN_INTERVAL = 5.0  -- Lower CPU usage
+```
+
+**Instant Item Use Feedback:**
+```lua
+RCC_Constants.BUFF_UPDATE_DELAY_AFTER_USE = 0.1  -- Faster update
+```
+
+<Warning>
+  Setting `BUFF_SCAN_INTERVAL` below 1.0 second may cause performance issues on older systems.
+</Warning>

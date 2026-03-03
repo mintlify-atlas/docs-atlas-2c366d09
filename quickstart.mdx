@@ -1,80 +1,234 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quick Start
+description: Get started with Raid Consumable Checker in minutes - from opening the window to tracking your first consumables
 ---
 
-## Get started in three steps
+# Quick start
 
-Get your documentation site running locally and make your first customization.
+This guide will get you up and running with Raid Consumable Checker quickly. You'll learn how to open the addon, understand the interface, and start tracking your raid consumables.
 
-### Step 1: Set up your local environment
+## Opening the addon
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+Once you've [installed the addon](/installation), you can open it using any of these slash commands:
+
+<CodeGroup>
+```bash Primary command
+/rcc
+```
+
+```bash Alternative #1
+/raidcheck
+```
+
+```bash Alternative #2
+/consumables
+```
+</CodeGroup>
+
+<Tip>
+  Create a macro with `/rcc` and drag it to your action bar for quick access during raids:
+  
+  1. Press ESC and open the Macro menu
+  2. Create a new macro
+  3. Type `/rcc` in the macro text
+  4. Drag the macro icon to your action bar
+</Tip>
+
+## Understanding the interface
+
+When you open the addon window, you'll see your consumables organized into categories with several visual indicators.
+
+### Visual indicators explained
+
+<Steps>
+  <Step title="Item border colors">
+    The colored border around each item shows your buff status:
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
+    - **Green**: Buff active with more than 5 minutes remaining
+    - **Orange**: Buff active with less than 5 minutes remaining (warning - refresh soon!)
+    - **Red**: Buff not active (you need to use this consumable)
+    - **Black**: No buff to track (instant effect items like healing/mana potions)
+  </Step>
+  
+  <Step title="Buff timer display">
+    For items with active buffs, you'll see the remaining time displayed in the center of the icon:
     
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
+    - **45m**: 45 minutes remaining
+    - **2h**: 2 hours remaining
+    - No timer shown for instant effect items or inactive buffs
+  </Step>
+  
+  <Step title="Inventory counter">
+    At the bottom of each icon, you'll see your current inventory count vs. required amount (e.g., "5/10"):
     
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+    - **Green text**: You have enough items
+    - **Red text**: You need more items
+    - No counter shown for class buffs that don't require items
+  </Step>
+</Steps>
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  The addon automatically scans your buffs every 2 seconds when the window is open and updates inventory counts when you loot or use items.
 </Note>
+
+## Using consumables
+
+You can use consumables directly from the addon window:
+
+<Steps>
+  <Step title="Left-click to use">
+    Simply left-click on any consumable item icon to use it. The addon will automatically find the item in your bags and use it.
+  </Step>
+  
+  <Step title="Smart confirmation">
+    If you already have the buff active, the addon will show a confirmation dialog:
+    
+    ```
+    You already have the buff 'Supreme Power'. Do you want to use another Flask of Supreme Power?
+    ```
+    
+    - Click **Yes** to use the item anyway (overwrite the buff)
+    - Click **No** to cancel
+    
+    This prevents you from accidentally wasting expensive consumables!
+  </Step>
+  
+  <Step title="Hover for details">
+    Hover over any item to see a detailed tooltip with:
+    
+    - Item name
+    - Current buff status
+    - Item description
+    - Special notes (like weapon enchant tracking)
+  </Step>
+</Steps>
+
+## Window controls
+
+Interact with the addon window using these controls:
+
+<CardGroup cols={2}>
+  <Card title="Move the window" icon="arrows-up-down-left-right">
+    Click and drag the title bar to reposition the window anywhere on your screen. Your position is automatically saved.
+  </Card>
+  
+  <Card title="Close the window" icon="xmark">
+    Click the X button in the top-right corner, or use any of the slash commands (`/rcc`, `/raidcheck`, `/consumables`) to toggle the window.
+  </Card>
+  
+  <Card title="Open configuration" icon="gear">
+    Click the **Config** button to open the in-game configuration menu where you can add, edit, or delete consumables and categories.
+  </Card>
+  
+  <Card title="View tooltips" icon="circle-info">
+    Hover your mouse over any item icon to see detailed information including buff status and item descriptions.
+  </Card>
+</CardGroup>
+
+## Common usage patterns
+
+Here are some typical ways to use the addon during raids:
+
+<AccordionGroup>
+  <Accordion title="Pre-raid buff check" icon="list-check">
+    Before the raid starts:
+    
+    1. Open the addon with `/rcc`
+    2. Check for red borders (missing buffs)
+    3. Click each red-bordered item to apply the buff
+    4. Verify all borders turn green
+    5. Check inventory counters to ensure you have enough consumables for the full raid
+  </Accordion>
+  
+  <Accordion title="During raid - monitor buff timers" icon="clock">
+    During the raid:
+    
+    1. Keep the window open or toggle it periodically with `/rcc`
+    2. Watch for orange borders (buffs expiring soon)
+    3. Click to refresh buffs before they expire
+    4. Monitor your consumable inventory to know when you're running low
+  </Accordion>
+  
+  <Accordion title="After death - rebuff quickly" icon="heart-pulse">
+    After a death:
+    
+    1. Open the addon with `/rcc`
+    2. All your lost buffs will show red borders
+    3. Quickly click through each item to rebuff
+    4. Get back to the action faster than searching through bags
+  </Accordion>
+</AccordionGroup>
+
+## Understanding item types
+
+The addon tracks two types of entries:
+
+<Tabs>
+  <Tab title="Consumables">
+    Physical items you carry in your bags (Flasks, Potions, Food, Oils):
+    
+    **Example: Flask of Supreme Power**
+    - Shows inventory count (1/1)
+    - Tracks "Supreme Power" buff
+    - Green/Orange/Red border based on buff status
+    - Click to use the flask
+    
+    **Example: Major Healing Potion**
+    - Shows inventory count (10/10)
+    - No buff tracking (instant effect)
+    - Black border (always)
+    - Click to use a potion
+  </Tab>
+  
+  <Tab title="Buffs">
+    Class buffs or auras without physical items (Arcane Intellect, Mark of the Wild, etc.):
+    
+    **Example: Mage Intellect**
+    - No inventory count shown
+    - Tracks "Arcane Intellect" or "Arcane Brilliance" buffs
+    - Green/Orange/Red border based on buff status
+    - Cannot click to use (requires another player to cast)
+    
+    This helps you monitor important raid buffs even if you can't apply them yourself.
+  </Tab>
+  
+  <Tab title="Weapon Enchants">
+    Temporary weapon enchantments (Wizard Oil, Sharpening Stones, Rogue Poisons):
+    
+    **Example: Wizard Oil**
+    - Shows inventory count (4/4)
+    - Tracks weapon enchant using special `EQUIPPED_WEAPON` keyword
+    - Green/Orange/Red border based on enchant status on main hand
+    - Click to apply the oil to your weapon
+    
+    <Note>
+      Weapon enchant tracking only monitors your main hand weapon.
+    </Note>
+  </Tab>
+</Tabs>
+
+## What's next?
+
+You're now ready to use Raid Consumable Checker in your raids! Here are some next steps:
+
+<CardGroup cols={2}>
+  <Card title="Configuration guide" icon="sliders" href="/configuration/overview">
+    Learn how to customize your consumable list using the in-game configuration menu
+  </Card>
+  
+  <Card title="Advanced features" icon="wand-magic-sparkles" href="/configuration/advanced">
+    Explore advanced customization options for power users
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/troubleshooting">
+    Find solutions to common issues and problems
+  </Card>
+  
+  <Card title="FAQ" icon="question-circle" href="/faq">
+    Get answers to frequently asked questions
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro tip**: Keep the window open during raids for automatic buff scanning, or close it to save screen space and only open it when needed. The addon is optimized to only scan buffs when the window is visible.
+</Tip>

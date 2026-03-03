@@ -1,0 +1,217 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for Raid Consumable Checker
+---
+
+## Common Issues
+
+This page covers common problems you might encounter and how to resolve them.
+
+### Window Doesn't Appear
+
+If the addon window doesn't show up when using `/rcc`, try these steps:
+
+1. **Check if the addon is enabled** in the AddOns menu at character selection
+2. **Reload the UI** by typing `/reload` in-game
+3. **Verify folder structure** - ensure the path is `Interface/AddOns/RaidConsumableChecker/` 
+
+<Warning>
+  **Common folder mistake**: The addon folder should be directly under `AddOns/`, not nested like `AddOns/RaidConsumableChecker-main/RaidConsumableChecker/`
+</Warning>
+
+Correct structure:
+```
+World of Warcraft/
+└── Interface/
+    └── AddOns/
+        └── RaidConsumableChecker/
+            ├── Core/
+            ├── RaidConsumableChecker.toc
+            └── RaidConsumableChecker_Constants.lua
+```
+
+### Question Mark Icons
+
+**Symptom**: Items display a question mark instead of the proper icon.
+
+**Cause**: The icon name in your configuration is incorrect or misspelled.
+
+**Solution**:
+- Verify the icon name on [Wowhead](https://web.archive.org/web/20230524183438/https://www.wowhead.com/classic/)
+- Icon names must use underscores, not spaces (e.g., `INV_Potion_41`, not `INV Potion 41`)
+- The addon will still function correctly with question marks - they're intentional fallbacks
+
+<Note>
+  Question mark icons don't break functionality. You can still click items and track buffs normally.
+</Note>
+
+**Common icon name mistakes**:
+- ❌ `INV Potion 41` (spaces instead of underscores)
+- ✅ `INV_Potion_41` (correct format)
+
+### Buff Tracking Not Working
+
+**Symptom**: Item borders always show red even when you have the buff active.
+
+**Cause**: Buff name doesn't match the exact in-game buff name.
+
+**Solution**:
+1. **Hover over the buff** on your buff bar in-game to see its exact name
+2. **Edit the item** in the configuration menu and update the Buff Name field
+3. **Buff names are case-sensitive**: "Supreme Power" ≠ "supreme power"
+
+<Warning>
+  Buff names must match **exactly** as they appear in-game, including capitalization and spacing.
+</Warning>
+
+**Common buff name mistakes**:
+- ❌ `supreme power` (wrong case)
+- ✅ `Supreme Power` (correct)
+- ❌ `Arcane intellect` (wrong case)
+- ✅ `Arcane Intellect` (correct)
+
+**Special case - Weapon enchants**:
+For temporary weapon enchants (Wizard Oil, Sharpening Stones, Rogue Poisons), use the special keyword:
+```
+EQUIPPED_WEAPON
+```
+
+This tracks enchants that appear as buffs matching your main-hand weapon name.
+
+### Item Counter Shows Wrong Amount
+
+**Symptom**: The inventory count (e.g., "5/10") shows 0 or an incorrect number.
+
+**Cause**: Item name doesn't match the exact name in your bags.
+
+**Solution**:
+1. **Check your bags** for the exact item name (case-sensitive)
+2. **Update the Item Name field** in the configuration menu
+3. **Open and close your bags** to trigger an inventory update
+4. If still incorrect, use `/reload` to force a full inventory refresh
+
+**Common item name mistakes**:
+- ❌ `major healing potion` (wrong case)
+- ✅ `Major Healing Potion` (correct)
+- ❌ `flask of supreme power` (wrong case)
+- ✅ `Flask of Supreme Power` (correct)
+
+### Click-to-Use Doesn't Work
+
+**Symptom**: Left-clicking an item icon doesn't use the item.
+
+**Cause**: The Item Name field is empty or incorrect.
+
+**Solution**:
+- Open the configuration menu and ensure the **Item Name** field is filled with the exact item name
+- Item names are **case-sensitive** and must match what's in your bags
+- For buff-only tracking (like Mage Intellect), it's normal for click-to-use not to work since there's no associated item
+
+<Note>
+  If you're only tracking a buff without an associated consumable item (like class buffs), leave the Item Name field empty. Click-to-use won't work for these entries.
+</Note>
+
+### Borders Always Show Black
+
+**Symptom**: Item borders are always black instead of showing buff status colors.
+
+**Cause**: This is intentional for items without buff tracking.
+
+**Explanation**:
+- Black borders indicate items with instant effects (no buff to track)
+- Examples: Healing potions, mana potions
+- These items don't grant a buff, so there's no buff status to display
+
+**If you expect buff tracking**:
+- Verify that the **Buff Name** field is filled in the configuration menu
+- Check that the buff name is spelled exactly as it appears in-game
+
+### Confirmation Dialog Issues
+
+**Symptom**: You get a warning dialog when clicking an item even though you want to use it.
+
+**Cause**: This is a built-in safety feature.
+
+**Explanation**:
+The addon warns you before using a consumable when you already have that buff active. This prevents accidental waste of expensive consumables.
+
+**Solution**:
+- Click **"Yes"** to use the item anyway (this will overwrite the existing buff)
+- Click **"No"** to cancel
+
+This is intentional behavior and cannot be disabled.
+
+### Window Position Resets
+
+**Symptom**: The window position resets to default after restarting the game.
+
+**Cause**: SavedVariables file isn't being written properly.
+
+**Solution**:
+1. **Exit the game properly** - don't force quit with Alt+F4 or task manager
+2. Use `/logout` or exit through the game menu to ensure settings save
+3. Window position is stored in `WTF/Account/[AccountName]/SavedVariables/RaidConsumableChecker.lua`
+
+<Note>
+  Using `/reload` preserves your saved window position and doesn't require a full game restart.
+</Note>
+
+### Instant Items Showing Red Border
+
+**Symptom**: Healing or mana potions show a red border instead of black.
+
+**Cause**: A Buff Name is configured for an instant-effect item.
+
+**Solution**:
+- Open the configuration menu
+- Edit the item and **clear the Buff Name field**
+- Leave Buff Name empty for instant effect items like:
+  - Major Healing Potion
+  - Major Mana Potion
+  - Other instant consumables
+
+Instant items should have a **black border** (no buff to track).
+
+## Installation Issues
+
+### Addon Doesn't Load
+
+**Symptoms**:
+- No `/rcc` command available
+- Addon doesn't appear in AddOns list at character selection
+
+**Solutions**:
+1. **Verify folder name** is `RaidConsumableChecker` (not `RaidConsumableChecker-main`)
+2. **Check folder location** is `World of Warcraft/Interface/AddOns/RaidConsumableChecker/`
+3. **Verify .toc file exists** at `RaidConsumableChecker/RaidConsumableChecker.toc`
+4. Restart World of Warcraft completely
+
+### Config Button Not Working
+
+**Symptom**: Clicking the Config button doesn't open the menu.
+
+**Solution**:
+- This may indicate a Lua error - check if you have an error display addon installed
+- Try `/reload` to refresh the UI
+- Verify you're running v2.0.0 or later (config menu was added in v2.0.0)
+
+## Performance Issues
+
+### Lag When Window Is Open
+
+**Note about buff scanning**:
+The addon scans for buffs every 2 seconds while the window is open. This is a performance optimization.
+
+**If you experience lag**:
+- Close the window when not actively checking consumables
+- The window only needs to be open when you want to monitor buff status
+- Inventory counts update even when the window is closed
+
+## Getting Help
+
+If you're still experiencing issues after trying these solutions:
+
+1. Verify you're running **World of Warcraft 1.12.x (Vanilla)**
+2. Check that you're using the latest version of the addon
+3. Try disabling other addons to rule out conflicts
+4. Report the issue on the [GitHub repository](https://github.com/Devilquest/RaidConsumableChecker)

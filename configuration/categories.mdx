@@ -1,0 +1,402 @@
+---
+title: Category Configuration
+description: Organize consumables into custom groups
+---
+
+## What are Categories?
+
+Categories are organizational groups that separate your consumables into logical sections. Each category appears as a **header** in the main RCC window, with all its items displayed below.
+
+### Default Categories
+
+RCC ships with these categories:
+
+<CardGroup cols={2}>
+  <Card title="Flasks / Oil / Food" icon="flask">
+    Long-duration consumables like flasks, weapon oils, and raid food.
+  </Card>
+  <Card title="Main Elixirs" icon="wand-magic-sparkles">
+    Battle and guardian elixirs for stat boosts.
+  </Card>
+  <Card title="Potions" icon="bottles">
+    Healing and mana potions for emergency use.
+  </Card>
+  <Card title="Buffs" icon="sparkles">
+    Class buffs like Arcane Intellect and Mark of the Wild.
+  </Card>
+</CardGroup>
+
+## Category Fields
+
+<ParamField path="id" type="string" required>
+  Unique internal identifier for the category.
+  
+  - Auto-generated when creating new categories
+  - Format: `cat_[cleanname]_[timestamp]`
+  - Cannot be edited manually
+  - Items reference this ID
+  
+  **Example:** `category1` or `cat_mainelixirs_1234567890`
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  Display title shown in the category header.
+  
+  - Appears in uppercase in the main UI
+  - Used in configuration menu
+  - Can contain spaces and special characters
+  - Required to save category
+  
+  **Example:** `Main Elixirs`
+</ParamField>
+
+<ParamField path="dashes" type="number" default="20">
+  Number of dashes shown in the UI header line.
+  
+  - Visual styling only
+  - Affects header width
+  - Defaults to 20 if not specified
+  
+  **Example:** `24` → `-- MAIN ELIXIRS ------------------------`
+</ParamField>
+
+## Category Structure
+
+<CodeGroup>
+```lua Simple Category
+{
+  id = "category1",
+  name = "Flasks / Oil / Food",
+  dashes = 20
+}
+```
+
+```lua Custom Category
+{
+  id = "cat_raidbuffs_1709123456",
+  name = "Raid Buffs",
+  dashes = 26
+}
+```
+
+```lua Minimal Category
+{
+  id = "cat_other_1709999999",
+  name = "Other"
+  -- dashes defaults to 20
+}
+```
+</CodeGroup>
+
+## Default Categories
+
+Here are the categories that ship with RCC:
+
+```lua RaidConsumableChecker_Constants.lua
+RCC_Constants.DEFAULT_CATEGORIES = {
+  {
+    id = "category1",
+    name = "Flasks / Oil / Food",
+    dashes = 20
+  },
+  {
+    id = "category2",
+    name = "Main Elixirs",
+    dashes = 24
+  },
+  {
+    id = "category3",
+    name = "Potions",
+    dashes = 26
+  },
+  {
+    id = "category4",
+    name = "Buffs",
+    dashes = 27
+  }
+}
+```
+
+## Adding Categories
+
+<Steps>
+  <Step title="Click 'New Category'">
+    Opens a blank category form with default values.
+  </Step>
+  
+  <Step title="Enter Category Name">
+    Provide a descriptive name like "Pre-Raid Buffs" or "Emergency Items".
+  </Step>
+  
+  <Step title="Adjust Dashes (Optional)">
+    Set the number of dashes for visual styling (default: 20).
+  </Step>
+  
+  <Step title="Click Save">
+    Category is created and appears at the bottom of the list.
+  </Step>
+  
+  <Step title="Add Items to Category">
+    Create new items and they'll default to this category.
+  </Step>
+</Steps>
+
+<Tip>
+  When you select a category in the list, new items will automatically be assigned to that category.
+</Tip>
+
+## Editing Categories
+
+<Steps>
+  <Step title="Click Category Header">
+    Click a category header (e.g., "-- FLASKS / OIL / FOOD --") in the left panel.
+  </Step>
+  
+  <Step title="Modify Fields">
+    Change the name or dashes value.
+  </Step>
+  
+  <Step title="Save Changes">
+    Save button enables when changes are detected.
+  </Step>
+</Steps>
+
+## Deleting Categories
+
+<Warning>
+  You can only delete **empty** categories. Categories with items cannot be deleted.
+</Warning>
+
+<Steps>
+  <Step title="Select Category">
+    Click the category header to select it.
+  </Step>
+  
+  <Step title="Click Delete">
+    Click the "Delete" button.
+  </Step>
+  
+  <Step title="Confirm Deletion">
+    A popup asks for confirmation.
+  </Step>
+  
+  <Step title="Category Removed">
+    Category disappears from the list.
+  </Step>
+</Steps>
+
+**If category has items:**
+
+```
+Cannot delete category 'Flasks / Oil / Food'. 
+It is being used by items.
+```
+
+To delete a category with items:
+
+1. Move or delete all items in that category first
+2. Then delete the empty category
+
+## Reordering Categories
+
+Use the **Up** and **Down** buttons to change category order:
+
+<Steps>
+  <Step title="Select Category">
+    Click a category header to select it.
+  </Step>
+  
+  <Step title="Move Up or Down">
+    Use the Up/Down buttons on the right.
+  </Step>
+  
+  <Step title="Items Move Together">
+    All items in the category move as a block.
+  </Step>
+  
+  <Step title="UI Updates">
+    Main window reflects the new order immediately.
+  </Step>
+</Steps>
+
+<Note>
+  **Important:** Moving a category moves **all its items** as a single block. This ensures items stay grouped with their category.
+</Note>
+
+## Category Assignment
+
+Items are assigned to categories via the `category` field:
+
+```lua Item with Category
+{
+  itemName = "Flask of Supreme Power",
+  category = "category1",  -- References category by ID
+  -- ... other fields
+}
+```
+
+### How Assignment Works
+
+<Tabs>
+  <Tab title="Creating New Items">
+    When you click "New Item":
+    
+    1. If an **item** is selected → New item goes to same category
+    2. If a **category** is selected → New item goes to that category
+    3. Otherwise → New item goes to the last category in the list
+  </Tab>
+  
+  <Tab title="Moving Between Categories">
+    To move an item to a different category:
+    
+    1. Select the item in the list
+    2. Use the **Up/Down** buttons to move past category headers
+    3. Item changes category when it crosses the header
+    4. Save is automatic (no need to click Save button)
+  </Tab>
+</Tabs>
+
+## Visual Display
+
+Categories appear in the main window as styled headers:
+
+```
+-- FLASKS / OIL / FOOD --------------------
+[Flask Icon] [Oil Icon] [Food Icon]
+
+-- MAIN ELIXIRS --------------------------
+[Elixir Icon] [Elixir Icon]
+
+-- POTIONS ------------------------------
+[Potion Icon] [Potion Icon] [Potion Icon]
+```
+
+### Header Styling
+
+Headers use special styling:
+
+- **Color**: Gold (configurable in Constants)
+- **Format**: `-- [NAME] [dashes]`
+- **Height**: 25px (configurable)
+- **Spacing**: 30px between categories (configurable)
+
+## Category Best Practices
+
+<AccordionGroup>
+  <Accordion title="Organize by Usage">
+    Group items by when you use them:
+    
+    - **Pre-Raid Buffs**: Long-duration buffs applied before entering
+    - **Combat Consumables**: Items used during boss fights
+    - **Emergency Items**: Healing/mana potions for emergencies
+    - **Enchants**: Weapon oils, sharpening stones
+  </Accordion>
+  
+  <Accordion title="Keep Categories Small">
+    Too many categories can clutter the UI:
+    
+    ✅ 3-5 categories: Easy to scan  
+    ❌ 10+ categories: Hard to navigate
+  </Accordion>
+  
+  <Accordion title="Use Descriptive Names">
+    Choose clear, concise names:
+    
+    ✅ "Main Elixirs", "Healing Potions"  
+    ❌ "Stuff", "Items", "Other"
+  </Accordion>
+  
+  <Accordion title="Adjust Dashes for Alignment">
+    Use the `dashes` field to make headers look uniform:
+    
+    ```lua
+    { name = "Flasks", dashes = 30 }     -- Shorter name
+    { name = "Potions", dashes = 29 }    -- Medium name
+    { name = "Elixirs", dashes = 29 }    -- Medium name
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Category Examples
+
+<CodeGroup>
+```lua Role-Based
+-- Organize by class role
+{
+  { id = "cat_dps", name = "DPS Consumables", dashes = 22 },
+  { id = "cat_healer", name = "Healer Consumables", dashes = 20 },
+  { id = "cat_tank", name = "Tank Consumables", dashes = 22 },
+  { id = "cat_utility", name = "Utility", dashes = 28 }
+}
+```
+
+```lua Duration-Based
+-- Organize by buff duration
+{
+  { id = "cat_long", name = "Long Duration (2h+)", dashes = 18 },
+  { id = "cat_medium", name = "Medium (30m-1h)", dashes = 20 },
+  { id = "cat_short", name = "Short (instant)", dashes = 22 }
+}
+```
+
+```lua Phase-Based
+-- Organize by raid phase
+{
+  { id = "cat_prebuff", name = "Pre-Raid Buffs", dashes = 22 },
+  { id = "cat_pulls", name = "Trash Pulls", dashes = 24 },
+  { id = "cat_bosses", name = "Boss Fights", dashes = 24 },
+  { id = "cat_wipes", name = "Wipe Recovery", dashes = 23 }
+}
+```
+</CodeGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Can't delete category">
+    **Error:** "Cannot delete category. It is being used by items."
+    
+    **Solution:**
+    1. Select each item in that category
+    2. Move them to a different category using Up/Down buttons
+    3. Once category is empty, delete it
+  </Accordion>
+  
+  <Accordion title="Category disappeared after reload">
+    **Cause:** Game crashed or Alt+F4 before saving
+    
+    **Solution:**
+    - Always exit WoW properly to save settings
+    - Use `/reload` to force save if needed
+    - Check `SavedVariables/RaidConsumableChecker.lua`
+  </Accordion>
+  
+  <Accordion title="Items not showing under category">
+    **Cause:** Item's `category` field doesn't match any category ID
+    
+    **Solution:**
+    1. Select the item
+    2. Check which category header it appears under
+    3. If orphaned, edit item and assign to valid category
+  </Accordion>
+  
+  <Accordion title="Dashes not showing correctly">
+    **Cause:** Dashes are visual only, affected by font/window size
+    
+    **Solution:**
+    - Experiment with different dash counts
+    - Typical range: 20-30 dashes
+    - Longer names need fewer dashes
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Item Configuration" icon="flask" href="/configuration/items">
+    Learn how to configure items within categories
+  </Card>
+  <Card title="Configuration Examples" icon="code" href="/configuration/examples">
+    See real category and item examples
+  </Card>
+</CardGroup>

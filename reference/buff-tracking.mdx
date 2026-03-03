@@ -1,0 +1,420 @@
+---
+title: Buff Tracking
+description: How RCC tracks buffs internally
+icon: clock
+---
+
+## Overview
+
+RCC uses a periodic scanning system to check active buffs on your character and update the UI accordingly. Buff tracking is **only active when the main window is visible** to minimize performance impact.
+
+## Scan Interval
+
+<ParamField path="BUFF_SCAN_INTERVAL" type="number" default="2.0">
+  Time in seconds between buff scans when the window is open.
+</ParamField>
+
+Defined in `RaidConsumableChecker_Constants.lua:76`:
+
+```lua
+RCC_Constants.BUFF_SCAN_INTERVAL = 2.0
+```
+
+### Scanning Logic
+
+Implemented in `RaidConsumableChecker_Core.lua:253-272`:
+
+```lua
+function RaidConsumableChecker:OnUpdate(elapsed)
+    if not self.mainFrame:IsVisible() then
+        return
+    end
+    
+    self.buffScanTimer = self.buffScanTimer + elapsed
+    if self.buffScanTimer >= RCC_Constants.BUFF_SCAN_INTERVAL then
+        self.buffScanTimer = 0
+        self:UpdateBuffs()
+    end
+    
+    if self.pendingBuffUpdate then
+        self.buffUpdateTimer = self.buffUpdateTimer + elapsed
+        if self.buffUpdateTimer >= RCC_Constants.BUFF_UPDATE_DELAY_AFTER_USE then
+            self.pendingBuffUpdate = false
+            self.buffUpdateTimer = 0
+            self:UpdateBuffs()
+        end
+    end
+end
+```
+
+**Key Points:**
+- Scans every 2 seconds while window is visible
+- Stops scanning when window is hidden
+- Timer resets to 0 when window is shown
+
+## Buff Detection
+
+### HasBuff() Function
+
+Location: `RaidConsumableChecker_Buffs.lua:171-211`
+
+```lua
+function RaidConsumableChecker:HasBuff(buffName)
+    if not buffName then
+        return false
+    end
+    
+    local buffNames = {}
+    if type(buffName) == "table" then
+        buffNames = buffName
+    else
+        buffNames = {buffName}
+    end
+    
+    for _, currentBuffName in ipairs(buffNames) do
+        if currentBuffName == RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON then
+            if self:HasWeaponEnchant() then
+                return true
+            end
+        else
+            -- Scan player buffs using GetPlayerBuff()
+            local i = 0
+            while GetPlayerBuff(i, "HELPFUL") >= 0 do
+                local buffIndex, untilCancelled = GetPlayerBuff(i, "HELPFUL")
+                
+                RCCTooltip = RCCTooltip or CreateFrame("GameTooltip", "RCCTooltip", nil, "GameTooltipTemplate")
+                RCCTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+                RCCTooltip:SetPlayerBuff(buffIndex)
+                
+                local tooltipText = RCCTooltipTextLeft1:GetText()
+                if tooltipText then
+                    local trimmedTooltipText = string.gsub(tooltipText, "^%s*(.-)%s*$", "%1")
+                    if trimmedTooltipText == trimmedBuffName then
+                        return true
+                    end
+                end
+                i = i + 1
+            end
+        end
+    end
+    
+    return false
+end
+```
+
+### Multi-Buff Support
+
+<ResponseField name="buffName" type="string | string[]">
+  Can be a single buff name or an array of buff names.
+</ResponseField>
+
+**Example:**
+```lua
+buffName = { "Arcane Intellect", "Arcane Brilliance" }
+```
+
+**Behavior:**
+- Returns `true` if **any** of the buff names are found
+- Checks buffs in array order
+- Stops searching after first match
+
+## Special Buff: EQUIPPED_WEAPON
+
+<ParamField path="SPECIAL_BUFF_EQUIPPED_WEAPON" type="string" default="EQUIPPED_WEAPON">
+  Special identifier for weapon enchants like Wizard Oil or sharpening stones.
+</ParamField>
+
+Defined in `RaidConsumableChecker_Constants.lua:116`:
+
+```lua
+RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON = "EQUIPPED_WEAPON"
+```
+
+### Weapon Enchant Detection
+
+Location: `RaidConsumableChecker_Buffs.lua:277-283`
+
+```lua
+function RaidConsumableChecker:HasWeaponEnchant()
+    local hasMainHandEnchant, mainHandExpiration, mainHandCharges = GetWeaponEnchantInfo()
+    if hasMainHandEnchant then
+        return true
+    end
+    return false
+end
+```
+
+**API Used:**
+- `GetWeaponEnchantInfo()` - Returns enchant status for main-hand weapon
+- Only checks main-hand (not off-hand)
+- Works for temporary enchants (oils, stones, poisons)
+
+## Buff Time Remaining
+
+### GetBuffTimeRemaining() Function
+
+Location: `RaidConsumableChecker_Buffs.lua:214-255`
+
+```lua
+function RaidConsumableChecker:GetBuffTimeRemaining(buffName)
+    if not buffName then
+        return nil
+    end
+    
+    local buffNames = {}
+    if type(buffName) == "table" then
+        buffNames = buffName
+    else
+        buffNames = {buffName}
+    end
+    
+    for _, currentBuffName in ipairs(buffNames) do
+        if currentBuffName == RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON then
+            local hasMainHandEnchant, mainHandExpiration, mainHandCharges = GetWeaponEnchantInfo()
+            if hasMainHandEnchant and mainHandExpiration then
+                return mainHandExpiration / 1000
+            end
+        else
+            -- Find buff and get time remaining
+            local i = 0
+            while GetPlayerBuff(i, "HELPFUL") >= 0 do
+                local buffIndex, untilCancelled = GetPlayerBuff(i, "HELPFUL")
+                
+                RCCTooltip = RCCTooltip or CreateFrame("GameTooltip", "RCCTooltip", nil, "GameTooltipTemplate")
+                RCCTooltip:SetOwner(UIParent, "ANCHOR_NONE")
+                RCCTooltip:SetPlayerBuff(buffIndex)
+                
+                local tooltipText = RCCTooltipTextLeft1:GetText()
+                if tooltipText then
+                    local trimmedTooltipText = string.gsub(tooltipText, "^%s*(.-)%s*$", "%1")
+                    if trimmedTooltipText == trimmedBuffName then
+                        return GetPlayerBuffTimeLeft(buffIndex)
+                    end
+                end
+                i = i + 1
+            end
+        end
+    end
+    
+    return nil
+end
+```
+
+**Return Values:**
+- Time remaining in seconds
+- `nil` if buff not found
+- For weapon enchants: `mainHandExpiration / 1000` (converts milliseconds to seconds)
+
+## Buff Warning Threshold
+
+<ParamField path="BUFF_WARNING_THRESHOLD" type="number" default="300">
+  Buff duration in seconds below which the border turns orange (5 minutes).
+</ParamField>
+
+Defined in `RaidConsumableChecker_Constants.lua:78`:
+
+```lua
+RCC_Constants.BUFF_WARNING_THRESHOLD = 300
+```
+
+### Border Color Logic
+
+Implemented in `RaidConsumableChecker_Buffs.lua:36-76`:
+
+```lua
+function RaidConsumableChecker:UpdateBuffs()
+    for i, itemFrame in ipairs(self.itemFrames) do
+        local itemData = itemFrame.itemData
+        
+        if itemData.buffName then
+            local hasBuff = self:HasBuff(itemData.buffName)
+            
+            if hasBuff then
+                local timeRemaining = self:GetBuffTimeRemaining(itemData.buffName)
+                if timeRemaining and timeRemaining > 0 then
+                    -- Show timer
+                    local formattedTime = self:FormatBuffTime(timeRemaining)
+                    if formattedTime ~= "" then
+                        itemFrame.buffTimeText:SetText(formattedTime)
+                        itemFrame.buffTimeText:Show()
+                    else
+                        itemFrame.buffTimeText:Hide()
+                    end
+                else
+                    itemFrame.buffTimeText:Hide()
+                end
+                
+                -- Set border color
+                if timeRemaining and timeRemaining > 0 and timeRemaining < RCC_Constants.BUFF_WARNING_THRESHOLD then
+                    -- Orange - less than 5 minutes
+                    local warnR, warnG, warnB, warnA = self:HexToRGBA(RCC_Constants.BORDER_COLOR_BUFF_WARNING)
+                    itemFrame.border:SetVertexColor(warnR, warnG, warnB, warnA)
+                else
+                    -- Green - more than 5 minutes or permanent
+                    local activeR, activeG, activeB, activeA = self:HexToRGBA(RCC_Constants.BORDER_COLOR_BUFF_ACTIVE)
+                    itemFrame.border:SetVertexColor(activeR, activeG, activeB, activeA)
+                end
+            else
+                itemFrame.buffTimeText:Hide()
+                -- Red - buff not active
+                local inactiveR, inactiveG, inactiveB, inactiveA = self:HexToRGBA(RCC_Constants.BORDER_COLOR_BUFF_INACTIVE)
+                itemFrame.border:SetVertexColor(inactiveR, inactiveG, inactiveB, inactiveA)
+            end
+        else
+            itemFrame.buffTimeText:Hide()
+            -- Black - no buff tracking
+            local noBuffR, noBuffG, noBuffB, noBuffA = self:HexToRGBA(RCC_Constants.BORDER_COLOR_NO_BUFF)
+            itemFrame.border:SetVertexColor(noBuffR, noBuffG, noBuffB, noBuffA)
+        end
+    end
+end
+```
+
+**Border Colors:**
+- **Green** (`BORDER_COLOR_BUFF_ACTIVE`): Buff active, &gt;5 minutes remaining
+- **Orange** (`BORDER_COLOR_BUFF_WARNING`): Buff active, &lt;5 minutes remaining
+- **Red** (`BORDER_COLOR_BUFF_INACTIVE`): Buff not active
+- **Black** (`BORDER_COLOR_NO_BUFF`): No buff tracking for this item
+
+## Time Formatting
+
+### FormatBuffTime() Function
+
+Location: `RaidConsumableChecker_Buffs.lua:258-274`
+
+```lua
+function RaidConsumableChecker:FormatBuffTime(timeInSeconds)
+    if not timeInSeconds or timeInSeconds <= 0 then
+        return ""
+    end
+    
+    if timeInSeconds < 60 then
+        return "< 1m"
+    end
+    if timeInSeconds < 3600 then
+        return math.ceil(timeInSeconds / 60) .. "m"
+    end
+    if timeInSeconds < 86400 then
+        return math.ceil(timeInSeconds / 3600) .. "h"
+    end
+    
+    return math.ceil(timeInSeconds / 86400) .. "d"
+end
+```
+
+**Format Examples:**
+- `< 1m` - Less than 60 seconds
+- `5m` - 5 minutes (300 seconds)
+- `2h` - 2 hours (7200 seconds)
+- `1d` - 1 day (86400 seconds)
+
+## Delayed Buff Update After Use
+
+<ParamField path="BUFF_UPDATE_DELAY_AFTER_USE" type="number" default="0.2">
+  Seconds to wait after using an item before updating buffs.
+</ParamField>
+
+Defined in `RaidConsumableChecker_Constants.lua:77`:
+
+```lua
+RCC_Constants.BUFF_UPDATE_DELAY_AFTER_USE = 0.2
+```
+
+### Why This Exists
+
+When you click an item to use it, there's a slight delay before the buff appears on your character. This constant ensures the buff scan happens **after** the buff is applied.
+
+Implemented in `RaidConsumableChecker_Buffs.lua:121-141`:
+
+```lua
+function RaidConsumableChecker:DoUseConsumable(itemName)
+    for bag = 0, 4 do
+        local numSlots = GetContainerNumSlots(bag)
+        if numSlots then
+            for slot = 1, numSlots do
+                local link = GetContainerItemLink(bag, slot)
+                if link then
+                    local _, _, name = string.find(link, "%[(.+)%]")
+                    if name and name == itemName then
+                        UseContainerItem(bag, slot)
+                        
+                        self:UpdateConsumables()
+                        self.pendingBuffUpdate = true
+                        self.buffUpdateTimer = 0
+                        return
+                    end
+                end
+            end
+        end
+    end
+end
+```
+
+**Flow:**
+1. Item is used via `UseContainerItem()`
+2. `pendingBuffUpdate` flag is set to `true`
+3. Timer waits 0.2 seconds
+4. `UpdateBuffs()` is called to scan for the new buff
+5. Flag is cleared
+
+## Performance Considerations
+
+<Note>
+  Buff scanning only occurs when the main window is visible. When you close the window, all buff timers stop to minimize CPU usage.
+</Note>
+
+### Window Visibility Checks
+
+```lua
+function RaidConsumableChecker:OnUpdate(elapsed)
+    if not self.mainFrame:IsVisible() then
+        return  -- Skip all updates
+    end
+    -- ... scanning logic
+end
+```
+
+### OnShow/OnHide Handlers
+
+```lua
+function RaidConsumableChecker:OnShow()
+    self:UpdateConsumables()
+    self:UpdateBuffs()
+    self.buffScanTimer = 0
+end
+
+function RaidConsumableChecker:OnHide()
+    self.buffScanTimer = 0
+    self.pendingBuffUpdate = false
+    self.buffUpdateTimer = 0
+end
+```
+
+**Benefits:**
+- No background processing when window is closed
+- Immediate update when window is opened
+- Timers reset to prevent stale data
+
+## Tooltip Integration
+
+Buff status is also shown in item tooltips when you hover over an item:
+
+```lua
+if itemData.buffName then
+    if itemData.buffName == RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON then
+        local hasEnchant = RaidConsumableChecker:HasWeaponEnchant()
+        if hasEnchant then
+            GameTooltip:AddLine(RCC_Constants.TEXT_TOOLTIP_WEAPON_ENCHANT, 0, 1, 0)
+        else
+            GameTooltip:AddLine(RCC_Constants.TEXT_TOOLTIP_WEAPON_ENCHANT, 1, 0, 0)
+        end
+    else
+        local hasBuff = RaidConsumableChecker:HasBuff(itemData.buffName)
+        -- Show buff name in green (active) or red (inactive)
+    end
+end
+```
+
+<Tip>
+  For the most accurate buff status, open the RCC window before raid encounters. The 2-second scan interval ensures you always have up-to-date information.
+</Tip>

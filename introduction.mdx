@@ -1,0 +1,117 @@
+---
+title: Introduction
+description: A visual tracker addon for World of Warcraft Vanilla 1.12 that helps you monitor your raid consumables with real-time inventory counts and buff timers
+---
+
+# Welcome to Raid Consumable Checker
+
+Raid Consumable Checker is a powerful visual tracker addon for World of Warcraft Vanilla 1.12 that helps you monitor your raid consumables with real-time inventory counts and buff timers. Never miss a buff or run out of essential consumables during raids again.
+
+<img
+  src="https://img.shields.io/badge/version-2.1.0-blue.svg"
+  alt="Version 2.1.0"
+/>
+<img
+  src="https://img.shields.io/badge/wow-1.12.x-orange.svg"
+  alt="WoW 1.12.x"
+/>
+
+## Key features
+
+<CardGroup cols={2}>
+  <Card title="In-game configuration" icon="sliders">
+    Add, edit, and delete consumables and categories directly from the config menu. No more manual file editing!
+  </Card>
+  
+  <Card title="Real-time buff monitoring" icon="clock">
+    Color-coded borders show buff status at a glance: green (active, &gt;5 min), orange (expiring soon, &lt;5 min), red (inactive), black (instant effect items)
+  </Card>
+  
+  <Card title="Visual inventory tracking" icon="box">
+    See all your raid consumables in one organized window with current/required counts displayed on each item
+  </Card>
+  
+  <Card title="Click-to-use functionality" icon="hand-pointer">
+    Left-click any consumable to use it directly from the tracker window - no need to search through bags
+  </Card>
+  
+  <Card title="Smart confirmation dialogs" icon="shield-check">
+    Warns you before using a consumable when you already have the buff active to prevent wasteful buff overwrites
+  </Card>
+  
+  <Card title="Weapon enchant tracking" icon="wand-magic-sparkles">
+    Special support for temporary weapon enchants like Wizard Oil, Rogue Poisons, and Sharpening Stones using the `EQUIPPED_WEAPON` keyword
+  </Card>
+  
+  <Card title="Organized categories" icon="folder">
+    Group consumables into customizable categories like "Flasks", "Potions", "Buffs" with full reordering support
+  </Card>
+  
+  <Card title="Automatic data migration" icon="database">
+    Automatically imports your old settings from v1.x upon first load - your customizations are preserved
+  </Card>
+</CardGroup>
+
+## Visual indicators
+
+The addon uses intuitive color coding to help you understand your buff status at a glance:
+
+<CardGroup cols={2}>
+  <Card title="Green border" icon="circle" iconType="solid" color="#00FF00">
+    Buff active with more than 5 minutes remaining - you're good to go
+  </Card>
+  
+  <Card title="Orange border" icon="circle" iconType="solid" color="#FF8800">
+    Buff active with less than 5 minutes remaining - warning, refresh soon
+  </Card>
+  
+  <Card title="Red border" icon="circle" iconType="solid" color="#FF0000">
+    Buff not active - you need to use this consumable
+  </Card>
+  
+  <Card title="Black border" icon="circle" iconType="solid" color="#000000">
+    Items without buff tracking like instant effect items (healing/mana potions)
+  </Card>
+</CardGroup>
+
+<Note>
+  **Buff time display**: Shows remaining time for active buffs (e.g., "45m", "2h") directly on the item icon
+  
+  **Item counter**: Displays current/required count for each consumable (e.g., "5/10") with green text when you have enough, red when you need more
+</Note>
+
+## What's new in v2.1.0
+
+<Accordion title="Latest updates">
+  - **Tab navigation**: Cycle between EditBoxes using the Tab key in configuration forms
+  - **Reverse navigation**: Use Shift + Tab to navigate backwards through form fields
+  - **Intelligent field skipping**: Disabled or grayed-out fields are automatically skipped during navigation
+</Accordion>
+
+<Accordion title="v2.0.0 highlights">
+  - In-game Configuration UI for items and categories
+  - Support for adding/deleting items dynamically without reloading
+  - Item reordering system via UI with Up/Down buttons
+  - Automated data migration from legacy files
+  - Simplified icon paths with shorthand support
+  - Visual "Config" button on main window
+</Accordion>
+
+## Requirements
+
+- **Game Version**: World of Warcraft 1.12.x (Vanilla)
+- **Dependencies**: None (standalone addon)
+
+## Get started
+
+Ready to start tracking your raid consumables? Head over to the [installation guide](/installation) to get set up in minutes, or jump straight to the [quick start guide](/quickstart) if you already have the addon installed.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Download and install the addon in your WoW client
+  </Card>
+  
+  <Card title="Quick start" icon="rocket" href="/quickstart">
+    Get from installation to opening the addon window in seconds
+  </Card>
+</CardGroup>

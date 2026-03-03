@@ -1,0 +1,201 @@
+---
+title: Visual indicators
+description: Understanding color coding and visual feedback in the addon interface
+---
+
+Raid Consumable Checker uses a comprehensive color-coding system to give you instant visual feedback about your raid readiness.
+
+## Border colors
+
+Each item icon has a colored border that indicates its buff status. There are four distinct border colors:
+
+<CardGroup cols={2}>
+  <Card title="Green border" icon="circle-check" color="#00ff00">
+    **Buff active with > 5 minutes remaining**
+    
+    - Hex color: `#00FF00` (full green)
+    - Indicates you're safe for the current encounter
+    - No action needed
+  </Card>
+  
+  <Card title="Orange border" icon="clock" color="#ff8800">
+    **Buff active with < 5 minutes remaining**
+    
+    - Hex color: `#FF8800` (orange)
+    - Warning threshold: 300 seconds (5 minutes)
+    - Consider refreshing before the next pull
+  </Card>
+  
+  <Card title="Red border" icon="circle-xmark" color="#ff0000">
+    **Buff not active**
+    
+    - Hex color: `#FF0000` (full red)
+    - You need to use this consumable
+    - Critical warning: missing expected buff
+  </Card>
+  
+  <Card title="Black border" icon="square" color="#000000">
+    **No buff tracking**
+    
+    - Hex color: `#000000` (black)
+    - Used for items without associated buffs
+    - Examples: Health potions, mana potions
+  </Card>
+</CardGroup>
+
+### Border color logic
+
+The addon determines border color based on these rules:
+
+```lua
+if item has no buffName:
+    border = BLACK
+else if buff is not active:
+    border = RED
+else if buff time remaining < 5 minutes:
+    border = ORANGE
+else:
+    border = GREEN
+```
+
+<Info>
+Border colors update every 2 seconds while the window is open, providing near real-time status.
+</Info>
+
+## Buff timers
+
+For items with active buffs, a timer appears overlaid on the icon:
+
+### Timer format
+
+The timer displays in abbreviated format:
+
+- **< 1m**: Less than 1 minute remaining
+- **5m**: Minutes (e.g., 5 minutes, 23 minutes)
+- **2h**: Hours (e.g., 2 hours)
+- **1d**: Days (for long-duration buffs like flasks that persist through death)
+
+### Timer position
+
+- If the item has a **counter** (e.g., "10/10"), the timer appears **centered** with slight upward offset
+- If there's **no counter**, the timer appears exactly centered on the icon
+
+<Note>
+Timers only appear when a buff is active. They disappear when the buff expires or is removed.
+</Note>
+
+## Item count indicators
+
+For consumables with a required count, a counter displays at the bottom of each icon:
+
+### Counter format
+
+```
+[current]/[required]
+```
+
+Examples:
+- `5/10` - You have 5 out of 10 required items
+- `12/10` - You have more than required
+- `0/1` - You're missing a required item
+
+### Counter colors
+
+<Tabs>
+  <Tab title="Green (sufficient)">
+    - Hex color: `#00FF00`
+    - Displayed when: `current >= required`
+    - Example: `15/10` or `10/10`
+    
+    You have enough of this consumable.
+  </Tab>
+  
+  <Tab title="Red (insufficient)">
+    - Hex color: `#FF0000`
+    - Displayed when: `current < required`
+    - Example: `3/10` or `0/5`
+    
+    You need more of this consumable.
+  </Tab>
+</Tabs>
+
+## Text colors
+
+Various text elements use specific colors for consistency:
+
+### Category headers
+
+- **Color**: Gold (`#FFD100`)
+- **Style**: Outlined text
+- **Size**: 13pt
+
+Category headers stand out from item names to clearly separate sections.
+
+### Item name labels
+
+- **Color**: White (`#FFFFFF`)
+- **Size**: 11pt
+- **Position**: Below each icon
+
+Item names are displayed if `SHOW_ITEM_NAMES` is enabled (default: true).
+
+### Chat messages
+
+When the addon sends chat messages, it uses color coding:
+
+- **[RCC] prefix**: Light blue (`#3FC7EB`)
+- **Warnings**: Gold (`#FFDB00`)
+- **Success messages**: Green (`#00FF00`)
+- **Error messages**: Red (`#FF0000`)
+- **Highlighted items**: White (`#FFFFFF`)
+
+## Special visual cases
+
+### Weapon enchants
+
+Weapon enchants (like Wizard Oil) use the special identifier `EQUIPPED_WEAPON`:
+
+- Border follows the same color rules as other buffs
+- Timer shows enchant duration in minutes
+- Tooltip displays "Weapon enchant" status
+
+### Buff-only entries
+
+Some entries track buffs without consumables (like Thorns or Mage Intellect):
+
+- **No counter** is displayed
+- Border color shows buff status
+- **Not clickable** (no associated item to use)
+- Display name shown instead of item name
+
+### Multiple buff names
+
+Items can track multiple buff variations (e.g., "Arcane Intellect" or "Arcane Brilliance"):
+
+- Border turns **green** if **any** tracked buff is active
+- Tooltip shows all possible buff names: "Buff: Arcane Intellect / Arcane Brilliance"
+- Timer shows the active buff's remaining duration
+
+## UI theme colors
+
+### Background and frame
+
+- **Window background**: Black with 80% opacity (`#CC000000`)
+- **Title bar background**: Dark gray (`#E61A1A1A`)
+- **Title text**: Gold (`#FFD100`)
+- **Icon background**: Dark gray (20% brightness)
+
+<Info>
+The semi-transparent background allows you to see the game world behind the tracker, useful for positioning during raids.
+</Info>
+
+## At-a-glance summary
+
+When you open the tracker, scan for these visual cues:
+
+1. **Red borders** - Missing buffs that need immediate attention
+2. **Orange borders** - Buffs expiring soon (< 5 min)
+3. **Red counters** - Insufficient consumable quantities
+4. **Black borders** - Non-buff items (potions) for reference only
+
+This color system lets you assess your raid readiness in seconds without reading any text.

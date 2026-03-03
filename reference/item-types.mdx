@@ -1,0 +1,228 @@
+---
+title: Item Types
+description: Understanding consumable vs buff entry types
+icon: flask
+---
+
+## Overview
+
+RCC supports two distinct entry types that determine how items are displayed and tracked:
+
+1. **Consumable** - Physical items in your inventory with optional buff tracking
+2. **Buff** - Buff-only tracking without inventory requirements (e.g., class buffs from others)
+
+## Entry Type: Consumable
+
+<ParamField path="entryType" type="string" default="consumable">
+  Tracks physical items in your bags with inventory counts and optional buff status.
+</ParamField>
+
+### Characteristics
+
+<ResponseField name="itemName" type="string" required>
+  Exact in-game item name (case-sensitive) used for bag scanning
+</ResponseField>
+
+<ResponseField name="requiredCount" type="number" required>
+  Minimum number of items you should carry
+</ResponseField>
+
+<ResponseField name="buffName" type="string | string[]">
+  Optional buff name(s) to track when item is used
+</ResponseField>
+
+<ResponseField name="itemID" type="number">
+  Optional WoW item ID for reference
+</ResponseField>
+
+<ResponseField name="displayName" type="string">
+  Optional override for display text (uses itemName if not provided)
+</ResponseField>
+
+### Example: Flask of Supreme Power
+
+```lua
+{
+    itemName = "Flask of Supreme Power",
+    itemID = 13512,
+    iconPath = "INV_Potion_41",
+    requiredCount = 1,
+    buffName = "Supreme Power",
+    description = "Increases damage done by magical spells and effects by up to 150 for 2 hrs.",
+    category = "category1",
+    entryType = "consumable"
+}
+```
+
+**Display Features:**
+- Shows item count: `0/1` (current/required)
+- Count turns green when `≥ requiredCount`, red when insufficient
+- Displays buff timer when buff is active
+- Border colors indicate buff status:
+  - **Green**: Buff active with &gt;5 min remaining
+  - **Orange**: Buff active with &lt;5 min remaining  
+  - **Red**: Buff not active
+  - **Black**: No buff tracking (e.g., potions without buffs)
+- Click to use item from bags
+
+### Example: Major Healing Potion (No Buff Tracking)
+
+```lua
+{
+    itemName = "Major Healing Potion",
+    itemID = 13446,
+    iconPath = "INV_Potion_54",
+    requiredCount = 10,
+    description = "Restores 1050 to 1750 health.",
+    category = "category3",
+    entryType = "consumable"
+}
+```
+
+**Note:** No `buffName` field, so border remains black and no buff tracking occurs.
+
+## Entry Type: Buff
+
+<ParamField path="entryType" type="string" default="buff">
+  Tracks only buff status without inventory requirements. Used for buffs provided by other players.
+</ParamField>
+
+### Characteristics
+
+<ResponseField name="buffName" type="string | string[]" required>
+  Buff name(s) to monitor on your character
+</ResponseField>
+
+<ResponseField name="displayName" type="string" required>
+  Display text shown in the UI
+</ResponseField>
+
+<ResponseField name="iconPath" type="string" required>
+  Icon to display (typically a spell icon)
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Optional tooltip description
+</ResponseField>
+
+### Example: Thorns (Single Buff)
+
+```lua
+{
+    displayName = "Thorns",
+    iconPath = "SPELL_Nature_Thorns",
+    buffName = "Thorns",
+    description = "Thorns sprout from the friendly target causing 18 Nature damage to attackers when hit. Lasts 10 min.",
+    category = "category4",
+    entryType = "buff"
+}
+```
+
+**Display Features:**
+- No inventory count displayed
+- Shows buff timer when active
+- Border indicates buff status (green/orange/red)
+- **Not clickable** - cannot be applied via RCC
+
+### Example: Mage Intellect (Multi-Buff Support)
+
+```lua
+{
+    displayName = "Mage Intellect",
+    iconPath = "SPELL_Holy_Magicalsentry",
+    buffName = { "Arcane Intellect", "Arcane Brilliance" },
+    description = "Increases Intellect by 31 for 30 min.",
+    category = "category4",
+    entryType = "buff"
+}
+```
+
+**Multi-Buff Behavior:**
+- Tracks multiple buff names (either single-target or AOE version)
+- Shows green if **any** of the listed buffs are active
+- Displays time remaining from whichever buff is found first
+
+## Type Detection (Migration)
+
+For items created before v2.0.0, RCC automatically determines the entry type in `RaidConsumableChecker_Core.lua:196-215`:
+
+```lua
+if not item.entryType then
+    local hasName = (item.itemName and item.itemName ~= "")
+    local hasReq = (item.requiredCount and tonumber(item.requiredCount) > 0)
+    local hasBuffs = false
+    
+    if type(item.buffName) == "table" then
+        hasBuffs = (table.getn(item.buffName) > 0)
+    else
+        hasBuffs = (item.buffName and item.buffName ~= "")
+    end
+    
+    if not hasName and not hasReq and hasBuffs then
+        item.entryType = "buff"
+    else
+        item.entryType = "consumable"
+    end
+end
+```
+
+**Detection Logic:**
+- **Buff**: No item name + no required count + has buff name
+- **Consumable**: Everything else
+
+## Special Case: Weapon Enchants
+
+<ParamField path="EQUIPPED_WEAPON" type="special">
+  Special buff name for temporary weapon enchants like oils and sharpening stones.
+</ParamField>
+
+### Example: Wizard Oil
+
+```lua
+{
+    itemName = "Wizard Oil",
+    itemID = 20750,
+    iconPath = "INV_Potion_104",
+    requiredCount = 4,
+    buffName = "EQUIPPED_WEAPON",
+    description = "While applied to target weapon it increases spell damage by up to 24. Lasts for 30 minutes.",
+    category = "category1",
+    entryType = "consumable"
+}
+```
+
+**How It Works:**
+- Uses `GetWeaponEnchantInfo()` API to detect any main-hand enchant
+- Shows green border if main-hand weapon has a temporary enchant
+- Displays time remaining for the enchant
+- Defined in `RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON`
+
+## Comparison Table
+
+| Feature | Consumable | Buff |
+|---------|-----------|------|
+| Item Name | Required | Not used |
+| Required Count | Required | Not used |
+| Buff Name | Optional | Required |
+| Display Name | Optional | Required |
+| Inventory Count | Shown | Hidden |
+| Clickable | Yes (if has itemName) | No |
+| Border Color | Based on buff/count | Based on buff only |
+| Buff Timer | Shown if buffName set | Always shown when active |
+
+<Tip>
+  Use **consumable** for items you carry in bags. Use **buff** for tracking buffs from other players (e.g., Fortitude, Mark of the Wild, Thorns).
+</Tip>
+
+## Configuration UI
+
+The Config window provides radio buttons to select entry type:
+
+- **Consumable** (default): Enables itemName, itemID, and requiredCount fields
+- **Buff**: Disables itemName, itemID, and requiredCount fields (greyed out)
+
+When you switch from Consumable to Buff, the addon temporarily saves your input so you can toggle back without losing data.
+
+<Note>
+  The entry type affects both display behavior and which fields are required when saving. Make sure to choose the correct type before saving your item.
+</Note>

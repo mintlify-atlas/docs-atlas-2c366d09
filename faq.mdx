@@ -1,0 +1,231 @@
+---
+title: Frequently Asked Questions
+description: Common questions about Raid Consumable Checker
+---
+
+## General Questions
+
+<Accordion title="What is Raid Consumable Checker?">
+  Raid Consumable Checker is a visual tracker addon for World of Warcraft Vanilla 1.12 that helps you monitor your raid consumables with real-time inventory counts and buff timers. It displays all your consumables in one organized window with color-coded borders showing buff status at a glance.
+</Accordion>
+
+<Accordion title="What WoW version does this work with?">
+  This addon is designed exclusively for **World of Warcraft 1.12.x (Vanilla)**. It does not support retail WoW, TBC, WotLK, or other expansions.
+</Accordion>
+
+<Accordion title="Does this addon require any dependencies?">
+  No. Raid Consumable Checker is a standalone addon with no dependencies. Just install it and start using it immediately.
+</Accordion>
+
+<Accordion title="How do I open the addon window?">
+  Use any of these slash commands:
+  - `/rcc`
+  - `/raidcheck`
+  - `/consumables`
+
+  **Tip**: Create a macro with `/rcc` and drag it to your action bar for quick access!
+</Accordion>
+
+## Configuration
+
+<Accordion title="Do I need to edit Lua files to configure the addon?">
+  **No!** As of v2.0.0, you can configure everything through the in-game menu. Simply click the **Config** button in the main window to add, edit, or delete consumables and categories.
+
+  The old method of editing `RaidConsumableChecker_Data.lua` is no longer necessary.
+</Accordion>
+
+<Accordion title="What's the difference between 'Consumable' and 'Buff' types?">
+  - **Consumable**: Physical items you carry in your bags (Flasks, Potions, Food). Tracks both inventory and buffs.
+  - **Buff**: Class buffs or auras (Arcane Intellect, Mark of the Wild, etc.) with no associated item. Only tracks buff status.
+
+  When you select "Buff" type, fields like Item Name and Required Count are automatically disabled since they don't apply.
+</Accordion>
+
+<Accordion title="Can I track class buffs like Arcane Intellect or Power Word: Fortitude?">
+  Yes! Set the item type to **Buff** and enter the buff name(s) in the Buff Name field. Leave the Item Name empty. The addon will track whether you have the buff active without trying to count items.
+
+  You can even track multiple buff variants:
+  ```
+  Arcane Intellect, Arcane Brilliance
+  ```
+</Accordion>
+
+<Accordion title="Where do I find icon names?">
+  Look up items on [Wowhead Classic](https://web.archive.org/web/20230524183438/https://www.wowhead.com/classic/). The icon name is usually listed on the item page.
+
+  In v2.0+, you only need the shorthand name:
+  - Use: `INV_Potion_41`
+  - Not: `Interface\\Icons\\INV_Potion_41`
+
+  The configuration menu shows a live preview as you type the icon name.
+</Accordion>
+
+<Accordion title="How do I find the exact buff name?">
+  Hover over the buff on your buff bar in-game. The name shown in the tooltip is the exact name you need to use.
+
+  **Important**: Buff names are case-sensitive!
+  - ✅ `Supreme Power`
+  - ❌ `supreme power`
+</Accordion>
+
+<Accordion title="Can I reorder items in the window?">
+  Yes! Use the **Up** and **Down** buttons in the configuration menu to organize items and categories exactly how you want them.
+
+  **Note**: Moving a category will move all items within it as a block.
+</Accordion>
+
+<Accordion title="Will my old configuration from v1.x be kept?">
+  Yes! The addon automatically migrates your data from `RaidConsumableChecker_Data.lua` during your first login after upgrading to v2.0+. You won't lose any of your custom configurations.
+</Accordion>
+
+## Features
+
+<Accordion title="What do the different border colors mean?">
+  Border colors indicate buff status:
+  - **Green**: Buff active with more than 5 minutes remaining
+  - **Orange**: Buff active with less than 5 minutes remaining (warning)
+  - **Red**: Buff not active
+  - **Black**: Items without buff tracking (instant effect items)
+</Accordion>
+
+<Accordion title="Can I click items to use them?">
+  Yes! Left-click any consumable icon to use it directly from the window. This only works if you have the correct **Item Name** configured (case-sensitive) and the item is in your bags.
+
+  **Note**: Buff-only entries (like class buffs) can't be clicked to use since they have no associated item.
+</Accordion>
+
+<Accordion title="Why do I get a confirmation dialog when clicking an item?">
+  The addon has a **smart confirmation feature** that warns you before using a consumable when you already have the buff active. This prevents accidentally wasting expensive consumables like flasks.
+
+  Click "Yes" to use anyway, or "No" to cancel.
+</Accordion>
+
+<Accordion title="How do I track weapon enchants like Wizard Oil or Sharpening Stones?">
+  Use the special keyword `EQUIPPED_WEAPON` in the **Buff Name** field. This tracks temporary enchants that appear as buffs matching your main-hand weapon name.
+
+  Example configuration for Wizard Oil:
+  - **Item Name**: `Wizard Oil`
+  - **Buff Name**: `EQUIPPED_WEAPON`
+  - **Icon Name**: `INV_Potion_104`
+
+  The border will turn green when an enchant is detected and orange when it has less than 5 minutes remaining.
+</Accordion>
+
+<Accordion title="Can I track multiple buff variants for one item?">
+  Yes! Enter multiple buff names separated by commas:
+  ```
+  Arcane Intellect, Arcane Brilliance
+  ```
+
+  The addon will check for any of the listed buffs. If you have multiple buffs listed, the first one will be used as the display label (if Display Name and Item Name are empty).
+</Accordion>
+
+<Accordion title="How often does the addon scan for buffs?">
+  The addon scans buffs every **2 seconds** while the window is open. This is a performance optimization - buff scanning only happens when you need it.
+
+  When the window is closed, buff scanning is paused to save resources.
+</Accordion>
+
+<Accordion title="Does the addon track inventory when the window is closed?">
+  Inventory counts are updated when you loot or use items, regardless of whether the window is open. However, buff status is only scanned while the window is visible.
+</Accordion>
+
+## Customization
+
+<Accordion title="Can I customize the colors and fonts?">
+  Yes, but this requires editing `RaidConsumableChecker_Constants.lua` manually. This file is for advanced users and contains detailed comments for each setting.
+
+  You can customize:
+  - Border colors for different buff states
+  - Text colors for inventory counts
+  - Font sizes and types
+  - Window padding and spacing
+  - Buff scan interval
+  - Warning threshold (when orange border appears)
+
+  <Warning>
+    Only edit `RaidConsumableChecker_Constants.lua` if you're comfortable with Lua. The in-game config menu doesn't support these advanced settings.
+  </Warning>
+</Accordion>
+
+<Accordion title="Can I move the window?">
+  Yes! Click and drag the title bar to move the window anywhere on your screen. The position is automatically saved and will persist across sessions (as long as you exit the game properly).
+</Accordion>
+
+<Accordion title="Can I change which field shows as the item label?">
+  The addon uses an automatic priority system:
+  1. **Display Name** (if filled, always shown)
+  2. **Item Name** (if Display Name is empty)
+  3. **Buff Name** (if both Display Name and Item Name are empty)
+
+  This means you can customize labels by filling the Display Name field, or let it auto-populate from Item Name or Buff Name.
+</Accordion>
+
+## Troubleshooting
+
+<Accordion title="Why do my items show question mark icons?">
+  This happens when the icon name is incorrect or misspelled. The question mark is an intentional fallback - your addon still works normally!
+
+  To fix:
+  - Verify the icon name on Wowhead
+  - Check for underscores: `INV_Potion_41` not `INV Potion 41`
+  - Update the Icon Name field in the configuration menu
+</Accordion>
+
+<Accordion title="Why are all my borders red even though I have buffs?">
+  This usually means the **Buff Name** doesn't match the in-game buff name exactly.
+
+  Solutions:
+  - Hover over your buff in-game to see the exact name
+  - Check capitalization (case-sensitive!)
+  - Update the Buff Name field in the configuration menu
+
+  For weapon enchants, use `EQUIPPED_WEAPON` instead of the buff name.
+</Accordion>
+
+<Accordion title="Why are my borders always black?">
+  Black borders are normal for items without buff tracking (instant effect items).
+
+  If you expect buff tracking:
+  - Make sure the **Buff Name** field is filled
+  - Verify the buff name is spelled exactly as it appears in-game
+
+  Instant items like healing/mana potions should have black borders.
+</Accordion>
+
+<Accordion title="Why doesn't my inventory count show correctly?">
+  The **Item Name** must match exactly as it appears in your bags (case-sensitive).
+
+  Try:
+  - Checking your bags for the exact item name
+  - Updating the Item Name field in configuration
+  - Opening and closing your bags
+  - Using `/reload` to refresh
+</Accordion>
+
+<Accordion title="Where are my settings saved?">
+  All settings are saved in:
+  ```
+  WTF/Account/[AccountName]/SavedVariables/RaidConsumableChecker.lua
+  ```
+
+  Make sure to exit the game properly (not Alt+F4) to ensure settings are written to disk.
+</Accordion>
+
+## Known Limitations
+
+<Accordion title="What are the known limitations of this addon?">
+  - Only works with WoW Vanilla 1.12.x
+  - Buff names must match exactly as they appear in-game
+  - Weapon enchant tracking only supports main-hand (not off-hand)
+  - Window must be open for buff scanning to work (performance optimization)
+  - No support for tracking multiple stacks of the same buff
+</Accordion>
+
+<Accordion title="Can I use this on retail WoW or TBC?">
+  No. This addon is designed exclusively for **WoW Vanilla 1.12.x** and will not work on other versions.
+</Accordion>
+
+<Accordion title="Can I track off-hand weapon enchants?">
+  Currently, weapon enchant tracking only supports the main-hand weapon when using the `EQUIPPED_WEAPON` keyword. Off-hand support is not available.
+</Accordion>

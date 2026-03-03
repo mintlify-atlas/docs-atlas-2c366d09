@@ -1,0 +1,208 @@
+---
+title: Changelog
+description: Version history and release notes for Raid Consumable Checker
+---
+
+Complete version history of Raid Consumable Checker, documenting all features, improvements, and changes.
+
+## v2.1.0
+
+**Release Focus**: Enhanced user experience with keyboard navigation
+
+This update improves the configuration menu with full keyboard support, making it faster and easier to add or edit consumables.
+
+### New Features
+
+- **Tab Navigation**: Press Tab to cycle focus between input fields in the configuration forms
+- **Reverse Navigation**: Use Shift + Tab to navigate backwards through fields
+- **Intelligent Field Skipping**: Disabled or grayed-out fields are automatically skipped during Tab navigation
+
+### Why This Matters
+
+Keyboard navigation significantly speeds up the workflow when adding multiple consumables or editing configurations. You can now fill out entire forms without touching the mouse.
+
+<Note>
+  This is particularly useful when adding multiple items at once - just Tab through the fields and hit Enter to save.
+</Note>
+
+---
+
+## v2.0.0
+
+**Release Focus**: In-game configuration system
+
+This was a major rewrite that eliminated the need to manually edit Lua files. All configuration can now be done through an intuitive in-game menu.
+
+### New Features
+
+**In-Game Configuration UI**
+- Complete menu system for managing items and categories
+- Add, edit, and delete consumables without editing files
+- Visual icon preview while typing icon names
+- Config button added to main window for easy access
+
+**Item Management**
+- Support for adding/deleting items dynamically without reloading
+- Real-time UI updates when changes are made
+- Item reordering system with Up/Down buttons
+- Category reordering (moves all items in category as a block)
+
+**Data Management**
+- Automated data migration from legacy v1.x files (`RaidConsumableChecker_Data.lua`)
+- All settings now saved in WoW's SavedVariables system
+- Improved database initialization and integrity checks
+
+**Developer Improvements**
+- Simplified icon paths - shorthand support (e.g., `INV_Potion_41` instead of full path)
+- Refactored core logic for better performance and modularity
+- Cleaner separation between UI, configuration, and core functionality
+
+### Breaking Changes
+
+<Warning>
+  While not technically breaking (thanks to automatic migration), the configuration system changed completely. Manual edits to `RaidConsumableChecker_Data.lua` are no longer supported after v2.0.
+</Warning>
+
+### Migration Notes
+
+Existing users upgrading from v1.x:
+- Your old configuration is automatically imported on first load
+- No manual action required
+- Old `RaidConsumableChecker_Data.lua` file can be deleted after migration
+- All future changes should be made through the in-game Config menu
+
+---
+
+## v1.1.0
+
+**Release Focus**: Buff tracking enhancements
+
+This update expanded the addon's capability to track buffs independently from consumable items.
+
+### New Features
+
+**Buff Tracking System**
+- Implemented comprehensive buff tracking support
+- Optional `requiredCount` - track buffs without inventory requirements
+- Multi-buff support using table syntax for `buffName`
+- Support for buff-only entries without associated `itemName`
+
+**Display Customization**
+- Optional `displayName` field for custom UI labels
+- Hierarchical display name priority: `displayName` > `itemName` > `buffName`
+- Automated hiding of inventory counters for items without `requiredCount`
+
+**Tooltip Improvements**
+- Multi-buff variant listing in tooltips
+- Shows all tracked buff variants when hovering over items
+
+### Use Cases Enabled
+
+This version made it possible to:
+- Track class buffs like Arcane Intellect or Power Word: Fortitude
+- Monitor buff status without requiring a consumable item
+- Use custom labels that differ from item/buff names
+- Track items that grant one of several possible buffs (rank variants)
+
+---
+
+## v1.0.0
+
+**Initial Release**
+
+The first public release of Raid Consumable Checker, providing core functionality for tracking raid consumables.
+
+### Core Features
+
+**Visual Tracking**
+- Visual consumable tracking with color-coded buff status borders
+- Real-time inventory counts for all configured items
+- Buff time remaining display (e.g., "45m", "2h")
+- Organized categories for logical grouping
+- Dynamic window sizing based on content
+
+**Buff Status Colors**
+- Green: Buff active with &gt;5 minutes remaining
+- Orange: Buff expiring soon (&lt;5 minutes)
+- Red: Buff not active
+- Black: Items with no buff to track
+
+**User Interaction**
+- Click to use consumables directly from the window
+- Smart confirmation dialog when buff is already active (prevents waste)
+- Draggable window with persistent position
+- Multiple slash commands: `/rcc`, `/raidcheck`, `/consumables`
+
+**Special Features**
+- Weapon enchant tracking support using buff detection
+- Fallback icons for invalid icon paths (question mark icon)
+- Item counter showing current/required amounts with color coding
+
+**Technical Features**
+- Standalone addon (no dependencies)
+- Manual configuration via `RaidConsumableChecker_Data.lua`
+- Buff scanning every 2 seconds while window is open
+- Support for WoW Vanilla 1.12.x
+
+### Known Limitations (v1.0.0)
+
+- Required manual Lua file editing for configuration
+- No in-game method to add or edit items
+- Buff names had to be determined manually (hover over buffs)
+- Icon names had to be looked up externally
+
+---
+
+## Version Comparison
+
+| Feature | v1.0.0 | v1.1.0 | v2.0.0 | v2.1.0 |
+|---------|--------|--------|--------|--------|
+| Basic consumable tracking | ✅ | ✅ | ✅ | ✅ |
+| Buff tracking | ✅ | ✅ | ✅ | ✅ |
+| Click-to-use | ✅ | ✅ | ✅ | ✅ |
+| Buff-only entries | ❌ | ✅ | ✅ | ✅ |
+| Multi-buff support | ❌ | ✅ | ✅ | ✅ |
+| Custom display names | ❌ | ✅ | ✅ | ✅ |
+| In-game configuration | ❌ | ❌ | ✅ | ✅ |
+| Item reordering | ❌ | ❌ | ✅ | ✅ |
+| Tab navigation | ❌ | ❌ | ❌ | ✅ |
+| Manual file editing required | ✅ | ✅ | ❌ | ❌ |
+
+---
+
+## Upgrade Paths
+
+<Accordion title="Upgrading from v1.x to v2.x">
+  **Automatic migration** handles everything:
+  1. Install v2.x following normal installation steps
+  2. Log in to the game
+  3. Your old configuration from `RaidConsumableChecker_Data.lua` is automatically imported
+  4. All settings are migrated to the new SavedVariables system
+  5. You can now delete the old `RaidConsumableChecker_Data.lua` file
+
+  Future configuration changes should be made through the in-game Config menu.
+</Accordion>
+
+<Accordion title="Upgrading from v2.0.0 to v2.1.0">
+  Standard upgrade - just replace the addon folder:
+  1. Download v2.1.0
+  2. Replace the `RaidConsumableChecker` folder in `Interface/AddOns/`
+  3. Restart WoW or `/reload`
+
+  All settings are preserved automatically. No migration needed.
+</Accordion>
+
+---
+
+## Future Plans
+
+While there's no official roadmap, potential future enhancements could include:
+- Off-hand weapon enchant tracking
+- Configurable buff scan intervals through UI
+- Import/export of configurations
+- Multiple configuration profiles
+- Enhanced tooltip customization
+
+<Note>
+  The addon is feature-complete for its intended purpose. Updates are primarily focused on quality of life improvements and bug fixes.
+</Note>

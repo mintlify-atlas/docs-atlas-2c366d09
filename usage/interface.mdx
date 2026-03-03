@@ -1,0 +1,144 @@
+---
+title: User interface
+description: Understanding the UI controls and interactions in Raid Consumable Checker
+---
+
+The Raid Consumable Checker interface is designed for quick visibility and easy interaction during raids.
+
+## Window structure
+
+The main window consists of several key components:
+
+### Title bar
+
+The title bar displays "Raid Consumable Checker" in gold text on a dark gray background.
+
+**Interactive features:**
+- **Drag to move**: Click and hold the title bar to reposition the window anywhere on screen
+- **Auto-save position**: When you release the drag, the window position is saved automatically
+
+<Info>
+The window is clamped to screen, meaning you can't accidentally drag it off-screen.
+</Info>
+
+### Control buttons
+
+Two buttons are located in the top-right corner:
+
+<AccordionGroup>
+  <Accordion title="Config button">
+    Opens the configuration panel where you can:
+    - Add new consumables and buff trackers
+    - Edit existing items
+    - Organize categories
+    - Adjust required quantities
+    
+    The Config button is positioned to the left of the Close button.
+  </Accordion>
+  
+  <Accordion title="Close button (X)">
+    Closes the main window. The standard UI panel close button.
+    
+    You can also close the window by:
+    - Using any slash command (`/rcc`, `/raidcheck`, `/consumables`)
+    - Pressing Escape (if the window has focus)
+  </Accordion>
+</AccordionGroup>
+
+### Content area
+
+The content area displays your consumables and buffs organized by category.
+
+## Item icon interactions
+
+Each consumable or buff is represented by an icon with several interactive features:
+
+### Hover tooltips
+
+When you hover over any item icon, a tooltip appears showing:
+
+- **Item name**: The consumable or buff name
+- **Required count**: How many you need (for consumables)
+- **Buff status**: Whether the buff is active (green) or inactive (red)
+- **Description**: What the item does
+- **Click hint**: "Click to use" for usable consumables
+
+<Note>
+For weapon enchants like Wizard Oil, the tooltip shows "Weapon enchant" status instead of a buff name.
+</Note>
+
+### Click to use
+
+For consumables with buff tracking (like flasks, elixirs, and food):
+
+**Left-click** on an item icon to use it directly from your bags.
+
+**Smart usage protection:**
+- If the buff is **already active**, a confirmation dialog appears:
+  ```
+  You already have the buff '[Buff Name]'. Do you want to use another [Item Name]?
+  ```
+- Click **Yes** to use another consumable anyway
+- Click **No** or **Escape** to cancel
+
+<Warning>
+Items without buffs (like health/mana potions) and buff-only entries (like Thorns) cannot be clicked.
+</Warning>
+
+### Visual feedback
+
+After clicking an item:
+
+1. The item count updates immediately
+2. A brief delay (0.2 seconds) occurs before buff status updates
+3. The border color and timer update to reflect the new buff status
+
+## Category headers
+
+Categories are displayed with decorative dashes and gold text:
+
+```
+--------------------- Flasks / Oil / Food ---------------------
+------------------------ Main Elixirs -------------------------
+--------------------------- Potions ---------------------------
+```
+
+Categories automatically adjust based on your configuration and only appear if they contain items.
+
+## Window dimensions
+
+The window size adjusts automatically based on:
+
+- **Width**: Determined by the category with the most items
+- **Height**: Calculated based on the number of categories
+- **Minimum width**: 400 pixels to ensure readability
+
+<Info>
+You don't need to manually resize the window. It recalculates dimensions when you add or remove items through the Config panel.
+</Info>
+
+## Real-time updates
+
+The interface updates automatically when:
+
+- **Bags change**: Item counts refresh when you loot, buy, or use items
+- **Buffs change**: Border colors and timers update every 2 seconds while the window is open
+- **Items used**: Clicking an item triggers immediate inventory and delayed buff updates
+
+## Performance optimization
+
+<CardGroup cols={2}>
+  <Card title="When window is open" icon="eye">
+    - Bag updates trigger on `BAG_UPDATE` events
+    - Buff scans run every 2.0 seconds
+    - Full UI refresh on show
+  </Card>
+  
+  <Card title="When window is closed" icon="eye-slash">
+    - No bag monitoring
+    - No buff scanning
+    - Zero performance overhead
+  </Card>
+</CardGroup>
+
+This ensures the addon doesn't impact game performance when you're not actively using it.

@@ -1,0 +1,625 @@
+---
+title: Advanced Customization
+description: Customize colors, fonts, dimensions, and timers via the Constants file
+---
+
+## Constants File
+
+For advanced users who want to customize the visual appearance and behavior of RCC beyond what the in-game UI offers, edit the **`RaidConsumableChecker_Constants.lua`** file.
+
+**Location:**
+```
+World of Warcraft/
+└── Interface/
+    └── AddOns/
+        └── RaidConsumableChecker/
+            └── RaidConsumableChecker_Constants.lua
+```
+
+<Warning>
+  **Lua Knowledge Required**: Only edit this file if you're comfortable with Lua syntax. Invalid values can break the addon.
+</Warning>
+
+<Note>
+  Changes to the Constants file require a `/reload` to take effect.
+</Note>
+
+## Customizable Constants
+
+All constants are defined in the `RCC_Constants` table with detailed inline comments.
+
+### UI Dimensions
+
+<ParamField path="WINDOW_WIDTH" type="number" default="850">
+  Default window width in pixels.
+  
+  - Auto-calculated based on number of items if needed
+  - Minimum enforced by `WINDOW_MIN_WIDTH`
+  
+  ```lua
+  RCC_Constants.WINDOW_WIDTH = 850
+  ```
+</ParamField>
+
+<ParamField path="WINDOW_HEIGHT" type="number" default="300">
+  Default window height in pixels.
+  
+  - Auto-calculated based on number of categories
+  - Accounts for title bar and padding
+  
+  ```lua
+  RCC_Constants.WINDOW_HEIGHT = 300
+  ```
+</ParamField>
+
+<ParamField path="WINDOW_MIN_WIDTH" type="number" default="400">
+  Minimum window width in pixels.
+  
+  ```lua
+  RCC_Constants.WINDOW_MIN_WIDTH = 400
+  ```
+</ParamField>
+
+<ParamField path="WINDOW_PADDING" type="number" default="15">
+  Outer padding around window content.
+  
+  ```lua
+  RCC_Constants.WINDOW_PADDING = 15
+  ```
+</ParamField>
+
+<ParamField path="ICON_SIZE" type="number" default="45">
+  Size of item icons (width and height).
+  
+  ```lua
+  RCC_Constants.ICON_SIZE = 45
+  ```
+</ParamField>
+
+<ParamField path="ICON_SPACING_X" type="number" default="25">
+  Horizontal spacing between item icons.
+  
+  ```lua
+  RCC_Constants.ICON_SPACING_X = 25
+  ```
+</ParamField>
+
+<ParamField path="CATEGORY_HEADER_HEIGHT" type="number" default="25">
+  Height of category header text.
+  
+  ```lua
+  RCC_Constants.CATEGORY_HEADER_HEIGHT = 25
+  ```
+</ParamField>
+
+<ParamField path="CATEGORY_SPACING" type="number" default="30">
+  Vertical space between categories.
+  
+  ```lua
+  RCC_Constants.CATEGORY_SPACING = 30
+  ```
+</ParamField>
+
+### Colors
+
+All colors use **ARGB hex format**: `"AARRGGBB"`
+
+<Note>
+  Format: `"AARRGGBB"` where AA = alpha, RR = red, GG = green, BB = blue  
+  Example: `"FF00FF00"` = fully opaque green
+</Note>
+
+#### Background Colors
+
+<CodeGroup>
+```lua Window Background
+RCC_Constants.BACKGROUND_COLOR = "CC000000"
+-- Black with 80% alpha (CC = 204/255)
+```
+
+```lua Title Bar
+RCC_Constants.TITLE_BG_COLOR = "E61A1A1A"
+-- Dark gray (E6 = 230/255 alpha)
+
+RCC_Constants.TITLE_TEXT_COLOR = "FFFFD100"
+-- Gold text (fully opaque)
+```
+</CodeGroup>
+
+#### Border Colors
+
+These control the colored borders around item icons:
+
+<ParamField path="BORDER_COLOR_BUFF_ACTIVE" type="string" default="FF00FF00">
+  Border when buff is active with **&gt;5 min** remaining.
+  
+  ```lua
+  RCC_Constants.BORDER_COLOR_BUFF_ACTIVE = "FF00FF00"  -- Green
+  ```
+</ParamField>
+
+<ParamField path="BORDER_COLOR_BUFF_WARNING" type="string" default="FFFF8800">
+  Border when buff is active with **&lt;5 min** remaining.
+  
+  ```lua
+  RCC_Constants.BORDER_COLOR_BUFF_WARNING = "FFFF8800"  -- Orange
+  ```
+</ParamField>
+
+<ParamField path="BORDER_COLOR_BUFF_INACTIVE" type="string" default="FFFF0000">
+  Border when buff is **not active**.
+  
+  ```lua
+  RCC_Constants.BORDER_COLOR_BUFF_INACTIVE = "FFFF0000"  -- Red
+  ```
+</ParamField>
+
+<ParamField path="BORDER_COLOR_NO_BUFF" type="string" default="FF000000">
+  Border for items **without buff tracking** (instant potions).
+  
+  ```lua
+  RCC_Constants.BORDER_COLOR_NO_BUFF = "FF000000"  -- Black
+  ```
+</ParamField>
+
+#### Text Colors
+
+<CodeGroup>
+```lua General Text
+RCC_Constants.TEXT_COLOR_NORMAL = "FFFFFFFF"         -- White
+RCC_Constants.TEXT_COLOR_CATEGORY = "FFFFD100"      -- Gold (category headers)
+RCC_Constants.TEXT_COLOR_DESCRIPTION = "FFCCCCCC"   -- Gray (tooltips)
+```
+
+```lua Inventory Counter
+RCC_Constants.TEXT_COLOR_SUFFICIENT = "FF00FF00"    -- Green (have enough)
+RCC_Constants.TEXT_COLOR_INSUFFICIENT = "FFFF0000"  -- Red (need more)
+```
+
+```lua Chat Messages
+RCC_Constants.TEXT_COLOR_ADDON_NAME = "FF3FC7EB"    -- Light blue
+RCC_Constants.TEXT_COLOR_GOLD = "FFFFDB00"          -- Gold (highlights)
+RCC_Constants.TEXT_COLOR_HIGHLIGHT = "FFFFFFFF"     -- White (emphasis)
+```
+</CodeGroup>
+
+### Fonts
+
+<ParamField path="FONT_TITLE" type="string" default="Fonts\\FRIZQT__.TTF">
+  Font file for title text.
+  
+  ```lua
+  RCC_Constants.FONT_TITLE = "Fonts\\FRIZQT__.TTF"
+  ```
+</ParamField>
+
+<ParamField path="FONT_NORMAL" type="string" default="Fonts\\FRIZQT__.TTF">
+  Font file for normal text.
+  
+  ```lua
+  RCC_Constants.FONT_NORMAL = "Fonts\\FRIZQT__.TTF"
+  ```
+</ParamField>
+
+#### Font Sizes
+
+<CodeGroup>
+```lua UI Text Sizes
+RCC_Constants.FONT_SIZE_TITLE = 14        -- Window title
+RCC_Constants.FONT_SIZE_CATEGORY = 13     -- Category headers
+RCC_Constants.FONT_SIZE_ITEM_NAME = 11    -- Item names under icons
+```
+
+```lua Icon Text Sizes
+RCC_Constants.FONT_SIZE_COUNTER = 14      -- Item count (e.g., "5/10")
+RCC_Constants.FONT_SIZE_BUFF_TIME = 14    -- Buff time remaining
+```
+</CodeGroup>
+
+### Timers and Performance
+
+<ParamField path="BUFF_SCAN_INTERVAL" type="number" default="2.0">
+  Seconds between buff scans (only when window is open).
+  
+  - Lower = more responsive, higher CPU usage
+  - Higher = less responsive, lower CPU usage
+  
+  ```lua
+  RCC_Constants.BUFF_SCAN_INTERVAL = 2.0  -- seconds
+  ```
+</ParamField>
+
+<ParamField path="BUFF_UPDATE_DELAY_AFTER_USE" type="number" default="0.2">
+  Seconds to wait after using item before updating buffs.
+  
+  - Prevents race conditions with game server
+  
+  ```lua
+  RCC_Constants.BUFF_UPDATE_DELAY_AFTER_USE = 0.2  -- seconds
+  ```
+</ParamField>
+
+<ParamField path="BUFF_WARNING_THRESHOLD" type="number" default="300">
+  Buff warning threshold in **seconds**.
+  
+  - Shows orange border when buff has less than this time remaining
+  - Default: 300 seconds = 5 minutes
+  
+  ```lua
+  RCC_Constants.BUFF_WARNING_THRESHOLD = 300  -- 5 minutes
+  ```
+</ParamField>
+
+### Display Settings
+
+<ParamField path="SHOW_ITEM_NAMES" type="boolean" default="true">
+  Show item names below icons.
+  
+  ```lua
+  RCC_Constants.SHOW_ITEM_NAMES = true
+  ```
+  
+  Set to `false` to hide item labels and show icons only.
+</ParamField>
+
+<ParamField path="TEXT_WINDOW_TITLE" type="string" default="Raid Consumable Checker">
+  Main window title text.
+  
+  ```lua
+  RCC_Constants.TEXT_WINDOW_TITLE = "Raid Consumable Checker"
+  ```
+</ParamField>
+
+<ParamField path="TEXT_COUNTER_FORMAT" type="string" default="%d/%d">
+  Format for item counter display.
+  
+  - Uses Lua string formatting
+  - Default: "current/required" (e.g., "5/10")
+  
+  ```lua
+  RCC_Constants.TEXT_COUNTER_FORMAT = "%d/%d"
+  ```
+</ParamField>
+
+### Special Keywords
+
+<ParamField path="SPECIAL_BUFF_EQUIPPED_WEAPON" type="string" default="EQUIPPED_WEAPON">
+  Special identifier for weapon enchants.
+  
+  ```lua
+  RCC_Constants.SPECIAL_BUFF_EQUIPPED_WEAPON = "EQUIPPED_WEAPON"
+  ```
+  
+  <Warning>
+    Do not change this unless you also update all items using it.
+  </Warning>
+</ParamField>
+
+## Customization Examples
+
+### Example: Change Border Colors
+
+Make borders more vibrant:
+
+```lua RaidConsumableChecker_Constants.lua
+-- Brighter green for active buffs
+RCC_Constants.BORDER_COLOR_BUFF_ACTIVE = "FF00FF00"    -- Bright green
+
+-- Yellow instead of orange for warnings
+RCC_Constants.BORDER_COLOR_BUFF_WARNING = "FFFFFF00"   -- Yellow
+
+-- Dark red instead of bright red
+RCC_Constants.BORDER_COLOR_BUFF_INACTIVE = "FF880000"  -- Dark red
+```
+
+### Example: Larger Icons
+
+Increase icon size and spacing:
+
+```lua RaidConsumableChecker_Constants.lua
+-- Bigger icons
+RCC_Constants.ICON_SIZE = 60  -- Up from 45
+
+-- More spacing to prevent overlap
+RCC_Constants.ICON_SPACING_X = 35  -- Up from 25
+```
+
+### Example: Change Warning Threshold
+
+Show orange border at 10 minutes instead of 5:
+
+```lua RaidConsumableChecker_Constants.lua
+-- 10 minutes = 600 seconds
+RCC_Constants.BUFF_WARNING_THRESHOLD = 600
+```
+
+### Example: Hide Item Names
+
+Show icons only without labels:
+
+```lua RaidConsumableChecker_Constants.lua
+RCC_Constants.SHOW_ITEM_NAMES = false
+```
+
+### Example: Custom Color Scheme
+
+Create a dark purple theme:
+
+```lua RaidConsumableChecker_Constants.lua
+-- Dark purple background
+RCC_Constants.BACKGROUND_COLOR = "CC1A0A2E"  -- Deep purple
+
+-- Purple title bar
+RCC_Constants.TITLE_BG_COLOR = "E6341553"   -- Purple
+RCC_Constants.TITLE_TEXT_COLOR = "FFDA70D6" -- Orchid text
+
+-- Purple-tinted borders
+RCC_Constants.BORDER_COLOR_BUFF_ACTIVE = "FF9370DB"    -- Medium purple (active)
+RCC_Constants.BORDER_COLOR_BUFF_WARNING = "FFFF00FF"   -- Magenta (warning)
+RCC_Constants.BORDER_COLOR_BUFF_INACTIVE = "FF4B0082"  -- Indigo (inactive)
+
+-- Orchid category headers
+RCC_Constants.TEXT_COLOR_CATEGORY = "FFDA70D6"
+```
+
+## Slash Commands
+
+Customize the slash commands:
+
+```lua RaidConsumableChecker_Constants.lua
+RCC_Constants.SLASH_COMMANDS = {
+    PRIMARY = "/rcc",
+    SECONDARY = "/raidcheck",
+    TERTIARY = "/consumables"
+}
+```
+
+Change to your preference:
+
+```lua Custom Commands
+RCC_Constants.SLASH_COMMANDS = {
+    PRIMARY = "/consumables",
+    SECONDARY = "/cons",
+    TERTIARY = "/checkbuffs"
+}
+```
+
+## Tooltip Customization
+
+```lua RaidConsumableChecker_Constants.lua
+-- Tooltip texts
+RCC_Constants.TEXT_TOOLTIP_WEAPON_ENCHANT = "Weapon enchant"
+RCC_Constants.TEXT_TOOLTIP_CLICK_TO_USE = "Click to use"
+```
+
+Customize tooltip hints:
+
+```lua Custom Tooltips
+RCC_Constants.TEXT_TOOLTIP_WEAPON_ENCHANT = "Enchant Active"
+RCC_Constants.TEXT_TOOLTIP_CLICK_TO_USE = "Left-click to consume"
+```
+
+## Confirmation Dialog
+
+Customize the buff overwrite confirmation:
+
+```lua RaidConsumableChecker_Constants.lua
+RCC_Constants.TEXT_CONFIRM_MESSAGE = "You already have the buff '%s'. Do you want to use another %s?"
+RCC_Constants.TEXT_CONFIRM_ACCEPT = "Yes"
+RCC_Constants.TEXT_CONFIRM_CANCEL = "No"
+```
+
+## Color Format Reference
+
+### ARGB Hex Colors
+
+Format: `"AARRGGBB"`
+
+<CodeGroup>
+```lua Alpha (AA)
+"FF"  -- 100% opaque (255/255)
+"CC"  -- 80% opaque (204/255)
+"99"  -- 60% opaque (153/255)
+"66"  -- 40% opaque (102/255)
+"33"  -- 20% opaque (51/255)
+"00"  -- 0% opaque (fully transparent)
+```
+
+```lua Common Colors (RRGGBB)
+"FF0000"  -- Red
+"00FF00"  -- Green
+"0000FF"  -- Blue
+"FFFF00"  -- Yellow
+"FF00FF"  -- Magenta
+"00FFFF"  -- Cyan
+"FFFFFF"  -- White
+"000000"  -- Black
+"808080"  -- Gray
+"FFA500"  -- Orange
+"800080"  -- Purple
+"FFD700"  -- Gold
+```
+</CodeGroup>
+
+### Color Examples
+
+<Tabs>
+  <Tab title="WoW Class Colors">
+    ```lua
+    "FFC79C6E"  -- Warrior (tan)
+    "FFF58CBA"  -- Paladin (pink)
+    "FFABD473"  -- Hunter (green)
+    "FFFFF569"  -- Rogue (yellow)
+    "FFFFFFFF"  -- Priest (white)
+    "FFC41F3B"  -- Death Knight (red)
+    "FF0070DE"  -- Shaman (blue)
+    "FF40C7EB"  -- Mage (cyan)
+    "FF8787ED"  -- Warlock (purple)
+    "FF00FF96"  -- Monk (jade)
+    "FFFF7D0A"  -- Druid (orange)
+    "FFA330C9"  -- Demon Hunter (violet)
+    ```
+  </Tab>
+  
+  <Tab title="Quality Colors">
+    ```lua
+    "FF9D9D9D"  -- Poor (gray)
+    "FFFFFFFF"  -- Common (white)
+    "FF1EFF00"  -- Uncommon (green)
+    "FF0070DD"  -- Rare (blue)
+    "FFA335EE"  -- Epic (purple)
+    "FFFF8000"  -- Legendary (orange)
+    "FFE6CC80"  -- Artifact (gold)
+    ```
+  </Tab>
+  
+  <Tab title="Custom Themes">
+    ```lua
+    -- Fire theme
+    "FFFF4500"  -- Orange red
+    "FFFF6347"  -- Tomato
+    "FFDC143C"  -- Crimson
+    
+    -- Ice theme
+    "FF87CEEB"  -- Sky blue
+    "FF4682B4"  -- Steel blue
+    "FF1E90FF"  -- Dodger blue
+    
+    -- Nature theme
+    "FF32CD32"  -- Lime green
+    "FF228B22"  -- Forest green
+    "FF8FBC8F"  -- Dark sea green
+    ```
+  </Tab>
+</Tabs>
+
+## Performance Tuning
+
+Optimize for your system:
+
+<Tabs>
+  <Tab title="High Performance">
+    Fast updates, higher CPU usage:
+    
+    ```lua
+    RCC_Constants.BUFF_SCAN_INTERVAL = 1.0  -- Scan every 1 second
+    ```
+  </Tab>
+  
+  <Tab title="Balanced">
+    Default settings:
+    
+    ```lua
+    RCC_Constants.BUFF_SCAN_INTERVAL = 2.0  -- Scan every 2 seconds
+    ```
+  </Tab>
+  
+  <Tab title="Low Performance">
+    Slower updates, lower CPU usage:
+    
+    ```lua
+    RCC_Constants.BUFF_SCAN_INTERVAL = 5.0  -- Scan every 5 seconds
+    ```
+  </Tab>
+</Tabs>
+
+<Note>
+  Buff scans **only run when the window is open**, so performance impact is minimal.
+</Note>
+
+## Restoring Defaults
+
+If you break something:
+
+<Steps>
+  <Step title="Backup Current File">
+    Copy `RaidConsumableChecker_Constants.lua` to a safe location.
+  </Step>
+  
+  <Step title="Delete Modified File">
+    Delete the modified `RaidConsumableChecker_Constants.lua`.
+  </Step>
+  
+  <Step title="Reinstall Addon">
+    Download and reinstall RCC to get fresh defaults.
+  </Step>
+  
+  <Step title="Reload UI">
+    Type `/reload` in-game.
+  </Step>
+</Steps>
+
+Or manually revert specific constants to their default values (listed in each section above).
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always Backup Before Editing">
+    Copy the file before making changes:
+    
+    ```bash
+    cp RaidConsumableChecker_Constants.lua RaidConsumableChecker_Constants.lua.backup
+    ```
+  </Accordion>
+  
+  <Accordion title="Test Changes Incrementally">
+    Change one thing at a time, then `/reload` to test:
+    
+    1. Edit one constant
+    2. Save file
+    3. `/reload` in-game
+    4. Verify it works
+    5. Repeat
+  </Accordion>
+  
+  <Accordion title="Use Comments">
+    Add comments to track your changes:
+    
+    ```lua
+    -- CUSTOM: Changed to 10 minutes instead of 5
+    RCC_Constants.BUFF_WARNING_THRESHOLD = 600
+    ```
+  </Accordion>
+  
+  <Accordion title="Validate Hex Colors">
+    Make sure colors are 8 characters (AARRGGBB):
+    
+    ❌ `"FF0000"` (missing alpha)  
+    ✅ `"FFFF0000"` (correct)
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting
+
+<Warning>
+  **Addon won't load after editing Constants**
+  
+  Likely a Lua syntax error:
+  
+  1. Check for typos in constant names
+  2. Ensure strings are in quotes: `"value"`
+  3. Ensure numbers don't have quotes: `300` not `"300"`
+  4. Check for missing commas (not in Constants, but if you edit tables)
+  5. Restore from backup if unsure
+</Warning>
+
+<Warning>
+  **Colors not showing correctly**
+  
+  Check color format:
+  
+  - Must be 8 characters: `"AARRGGBB"`
+  - Must be in quotes
+  - Must be valid hex: 0-9, A-F
+</Warning>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration Overview" icon="gear" href="/configuration/overview">
+    Back to configuration system overview
+  </Card>
+  <Card title="Item Configuration" icon="flask" href="/configuration/items">
+    Configure items and consumables
+  </Card>
+</CardGroup>

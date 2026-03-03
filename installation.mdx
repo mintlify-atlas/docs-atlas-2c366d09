@@ -1,0 +1,170 @@
+---
+title: Installation
+description: Download and install Raid Consumable Checker addon for World of Warcraft Vanilla 1.12
+---
+
+# Installation
+
+Get started with Raid Consumable Checker by following these simple installation steps. The addon is standalone with no dependencies required.
+
+## Choose your installation method
+
+You can install the addon using either direct download (recommended for most users) or Git clone (for advanced users).
+
+<Tabs>
+  <Tab title="Direct Download (Recommended)">
+    <Steps>
+      <Step title="Download the addon">
+        Navigate to the GitHub repository and click the green **`<> Code`** button at the top of the page, then select **Download ZIP**.
+      </Step>
+      
+      <Step title="Extract the ZIP file">
+        Extract the downloaded ZIP file to a temporary location on your computer using your preferred extraction tool (Windows Explorer, WinRAR, 7-Zip, etc.).
+      </Step>
+      
+      <Step title="Rename the folder">
+        Rename the extracted folder from `RaidConsumableChecker-main` to `RaidConsumableChecker` (if needed).
+        
+        <Warning>
+          This step is critical - the folder name must be exactly `RaidConsumableChecker` for WoW to recognize the addon.
+        </Warning>
+      </Step>
+      
+      <Step title="Move to AddOns directory">
+        Move the `RaidConsumableChecker` folder to your World of Warcraft AddOns directory:
+        
+        ```
+        World of Warcraft/Interface/AddOns/
+        ```
+        
+        The full path will look something like:
+        - Windows: `C:\Program Files\World of Warcraft\Interface\AddOns\`
+        - macOS: `/Applications/World of Warcraft/Interface/AddOns/`
+      </Step>
+      
+      <Step title="Restart or reload">
+        Either restart World of Warcraft completely, or if you're already in-game, type `/reload` in the chat to refresh the UI and load the addon.
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Git Clone">
+    <Steps>
+      <Step title="Navigate to AddOns directory">
+        Open your terminal or command prompt and navigate to your World of Warcraft AddOns directory:
+        
+        ```bash
+        cd "C:\Program Files\World of Warcraft\Interface\AddOns"
+        ```
+        
+        Or on macOS:
+        
+        ```bash
+        cd "/Applications/World of Warcraft/Interface/AddOns"
+        ```
+      </Step>
+      
+      <Step title="Clone the repository">
+        Run the following Git command to clone the repository:
+        
+        ```bash
+        git clone https://github.com/Devilquest/RaidConsumableChecker.git
+        ```
+      </Step>
+      
+      <Step title="Restart or reload">
+        Either restart World of Warcraft completely, or if you're already in-game, type `/reload` in the chat to refresh the UI and load the addon.
+      </Step>
+    </Steps>
+    
+    <Note>
+      Using Git clone makes it easier to update the addon later by simply running `git pull` from the addon directory.
+    </Note>
+  </Tab>
+</Tabs>
+
+## Verify installation
+
+After installation, verify that your folder structure is correct. Your directory should look like this:
+
+```
+World of Warcraft/
+└── Interface/
+    └── AddOns/
+        └── RaidConsumableChecker/
+            ├── Core/
+            │   ├── RaidConsumableChecker_Buffs.lua
+            │   ├── RaidConsumableChecker_Config.lua
+            │   ├── RaidConsumableChecker_Core.lua
+            │   └── RaidConsumableChecker_UI.lua
+            ├── RaidConsumableChecker.toc
+            └── RaidConsumableChecker_Constants.lua
+```
+
+<Warning>
+  **Common installation mistake**: Make sure you don't have nested folders. The structure should be:
+  
+  - ❌ **Incorrect**: `AddOns/RaidConsumableChecker-main/RaidConsumableChecker/`
+  - ✅ **Correct**: `AddOns/RaidConsumableChecker/`
+</Warning>
+
+## Confirm the addon is loaded
+
+Once you've installed and reloaded, check that the addon is active:
+
+<Steps>
+  <Step title="Check the character selection screen">
+    At the character selection screen, click the **AddOns** button in the bottom-left corner. You should see "Raid Consumable Checker" in the list with a checkmark.
+    
+    If it's not checked, enable it and click **Okay**.
+  </Step>
+  
+  <Step title="Look for the welcome message">
+    When you log into the game, you should see a welcome message in your chat window:
+    
+    ```
+    Raid Consumable Checker: v2.1.0 loaded. Type /rcc or /raidcheck to open.
+    ```
+  </Step>
+  
+  <Step title="Test the slash command">
+    Type `/rcc` in the chat and press Enter. The Raid Consumable Checker window should appear on your screen.
+  </Step>
+</Steps>
+
+<Note>
+  If you're upgrading from v1.x, you'll also see an additional message: "Data migrated from legacy configuration file." This means your old settings have been automatically imported.
+</Note>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The addon doesn't appear in the AddOns list">
+    - Verify your folder structure matches the example above
+    - Make sure the folder is named exactly `RaidConsumableChecker` (case-sensitive on some systems)
+    - Check that the `.toc` file is present in the main folder
+    - Try restarting WoW completely instead of using `/reload`
+  </Accordion>
+  
+  <Accordion title="The window doesn't appear when I type /rcc">
+    - Confirm the addon is enabled in the AddOns menu at character selection
+    - Try `/reload` to refresh the UI
+    - Check for any Lua errors using `/console scriptErrors 1`
+    - Verify that no other addon is conflicting with the same slash command
+  </Accordion>
+  
+  <Accordion title="I see Lua errors on login">
+    - Make sure you downloaded the complete addon (all files)
+    - Verify you're running WoW version 1.12.x (Vanilla)
+    - Try deleting the `WTF/Account/[YourAccount]/SavedVariables/RaidConsumableChecker.lua` file and restarting
+    - Disable other addons to check for conflicts
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+Now that you have the addon installed, head over to the [quick start guide](/quickstart) to learn how to use it effectively in your raids.
+
+<Card title="Quick start guide" icon="rocket" href="/quickstart">
+  Learn how to open the addon, understand the visual indicators, and start tracking your consumables
+</Card>
