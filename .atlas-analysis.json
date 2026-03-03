@@ -1,0 +1,78 @@
+{
+  "projectType": "general",
+  "projectName": "Raid Consumable Checker",
+  "projectDescription": "World of Warcraft Vanilla 1.12 addon for tracking raid consumables and buffs with real-time visual indicators",
+  "theme": "aspen",
+  "primaryColor": "#FFD100",
+  "lightColor": "#FFE766",
+  "darkColor": "#CC9F00",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "installation",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "User Guide",
+        "pages": [
+          "usage/commands",
+          "usage/interface",
+          "usage/visual-indicators"
+        ]
+      },
+      {
+        "group": "Configuration",
+        "pages": [
+          "configuration/overview",
+          "configuration/items",
+          "configuration/categories",
+          "configuration/examples",
+          "configuration/advanced"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/slash-commands",
+          "reference/item-types",
+          "reference/buff-tracking",
+          "reference/constants"
+        ]
+      },
+      {
+        "group": "Support",
+        "pages": [
+          "troubleshooting",
+          "faq",
+          "changelog"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "In-game configuration UI for managing consumables and categories",
+    "Real-time buff monitoring with color-coded status borders",
+    "Visual inventory tracking with current/required counts",
+    "Click-to-use functionality for consumables from the tracker window",
+    "Weapon enchant tracking for temporary enchantments",
+    "Automatic data migration from legacy versions",
+    "Organized categories with customizable display",
+    "Smart confirmation dialogs to prevent buff overwrites"
+  ],
+  "publicApiSurface": [
+    "/rcc - Toggle addon window",
+    "/raidcheck - Alternative toggle command",
+    "/consumables - Alternative toggle command",
+    "RaidConsumableChecker:Initialize() - Core initialization",
+    "RaidConsumableChecker:UpdateConsumables() - Update inventory counts",
+    "RaidConsumableChecker:UpdateBuffs() - Update buff status",
+    "RaidConsumableChecker:UseConsumable(itemData) - Use consumable item",
+    "RaidConsumableChecker:HasBuff(buffName) - Check buff status",
+    "RaidConsumableChecker:GetItemCount(itemName) - Get item count",
+    "RaidConsumableCheckerDB - Saved variables database"
+  ]
+}
